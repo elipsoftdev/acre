@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACRE · Mockup MVP</title>
+<style>
+  :root{
+    --foliage:#1f3d2b;      /* verde follaje profundo */
+    --foliage-2:#2f5740;
+    --grain:#c8862f;        /* ámbar grano/cosecha */
+    --grain-soft:#e6b65c;
+    --paper:#f4efe4;        /* papel cálido */
+    --soil:#3a2e22;         /* tierra */
+    --ink:#21261f;
+    --muted:#6f7468;
+    --line:#ddd5c4;
+    --ok:#2f7d4f;
+    --warn:#c8862f;
+    --bad:#a8442f;
+    --white:#fffdf8;
+    --shadow:0 10px 40px rgba(31,61,43,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter','Segoe UI',system-ui,sans-serif;
+    background:
+      radial-gradient(circle at 20% 0%, #e9e2d1 0%, transparent 55%),
+      radial-gradient(circle at 90% 100%, #ece4d2 0%, transparent 50%),
+      var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    padding:32px 20px 80px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+  .masthead{
+    display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;
+    border-bottom:2px solid var(--foliage);
+    padding-bottom:18px;margin-bottom:8px;
+  }
+  .logo{
+    font-family:'Georgia',serif;font-size:34px;font-weight:700;
+    letter-spacing:-.5px;color:var(--foliage);display:flex;align-items:center;gap:10px;
+  }
+  .logo .seed{
+    width:26px;height:26px;border-radius:50% 50% 50% 0;
+    background:linear-gradient(135deg,var(--grain),var(--foliage-2));
+    transform:rotate(0deg);box-shadow:inset -3px -3px 6px rgba(0,0,0,.15);
+  }
+  .tag{font-size:13px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase}
+  .sub{font-size:14px;color:var(--soil);margin:14px 0 26px;max-width:680px;line-height:1.55}
+  .sub b{color:var(--foliage)}
+
+  .toggle{display:flex;gap:8px;margin-bottom:30px;flex-wrap:wrap}
+  .toggle button{
+    font:inherit;font-size:14px;font-weight:600;cursor:pointer;
+    padding:10px 20px;border-radius:999px;border:1.5px solid var(--foliage);
+    background:transparent;color:var(--foliage);transition:.18s;
+  }
+  .toggle button.active{background:var(--foliage);color:var(--white)}
+  .toggle button:hover{transform:translateY(-1px)}
+
+  .stage{display:none}
+  .stage.show{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- APP (phone) ---------- */
+  .phones{display:flex;gap:34px;flex-wrap:wrap;justify-content:center}
+  .phone{
+    width:300px;background:var(--soil);border-radius:42px;padding:12px;
+    box-shadow:var(--shadow);flex:0 0 auto;
+  }
+  .phone .screen{
+    background:var(--white);border-radius:32px;overflow:hidden;height:610px;
+    display:flex;flex-direction:column;position:relative;
+  }
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:120px;height:24px;background:var(--soil);border-radius:0 0 16px 16px;z-index:5}
+  .pcap{text-align:center;font-size:12px;color:var(--muted);margin-top:12px;font-weight:600}
+
+  .appbar{
+    background:var(--foliage);color:var(--white);padding:30px 18px 16px;
+  }
+  .appbar .hi{font-size:13px;opacity:.8}
+  .appbar .name{font-size:20px;font-weight:700;font-family:Georgia,serif}
+  .appbar .loc{font-size:12px;opacity:.75;margin-top:3px;display:flex;align-items:center;gap:5px}
+
+  .appbody{flex:1;overflow-y:auto;padding:16px}
+  .appbody::-webkit-scrollbar{width:0}
+
+  .card{
+    background:var(--white);border:1px solid var(--line);border-radius:16px;
+    padding:15px;margin-bottom:13px;
+  }
+  .card.tinted{background:linear-gradient(135deg,#f7f2e6,#f2ecdc)}
+  .card .ctitle{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin-bottom:8px}
+
+  .credit-amt{font-family:Georgia,serif;font-size:30px;font-weight:700;color:var(--foliage)}
+  .credit-sub{font-size:12px;color:var(--muted);margin-top:2px}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:999px}
+  .pill.rev{background:#f5ecd6;color:var(--warn)}
+  .pill.ok{background:#e0efe4;color:var(--ok)}
+  .pill.new{background:#eee7da;color:var(--soil)}
+
+  /* timeline */
+  .tl{margin-top:6px}
+  .tl .step{display:flex;gap:11px;position:relative;padding-bottom:16px}
+  .tl .step:last-child{padding-bottom:0}
+  .tl .dot{width:14px;height:14px;border-radius:50%;background:var(--line);flex:0 0 auto;margin-top:2px;z-index:2}
+  .tl .step.done .dot{background:var(--ok)}
+  .tl .step.curr .dot{background:var(--grain);box-shadow:0 0 0 4px #f5ecd6}
+  .tl .step:not(:last-child)::before{content:"";position:absolute;left:6px;top:16px;bottom:0;width:2px;background:var(--line)}
+  .tl .step.done:not(:last-child)::before{background:var(--ok)}
+  .tl .lbl{font-size:13px;font-weight:600}
+  .tl .step.curr .lbl{color:var(--soil)}
+  .tl .tm{font-size:11px;color:var(--muted);margin-top:1px}
+
+  .farm-row{display:flex;align-items:center;gap:11px}
+  .farm-ico{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--foliage-2),var(--grain));flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+  .farm-row .fn{font-size:14px;font-weight:600}
+  .farm-row .fd{font-size:12px;color:var(--muted)}
+
+  .quick{display:flex;gap:10px;margin-bottom:14px}
+  .quick .q{flex:1;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:13px 8px;text-align:center;cursor:pointer;transition:.15s}
+  .quick .q:hover{border-color:var(--grain);transform:translateY(-2px)}
+  .quick .qi{font-size:20px}
+  .quick .ql{font-size:11px;font-weight:600;margin-top:5px;color:var(--soil)}
+
+  .btn{display:block;width:100%;text-align:center;background:var(--grain);color:#fff;font:inherit;font-weight:700;
+    font-size:14px;border:none;border-radius:12px;padding:13px;cursor:pointer;margin-top:4px;transition:.15s}
+  .btn:hover{background:#b3741f}
+  .btn.ghost{background:transparent;color:var(--foliage);border:1.5px solid var(--foliage)}
+
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:12px;font-weight:600;color:var(--soil);margin-bottom:5px}
+  .field .inp{background:#faf7f0;border:1px solid var(--line);border-radius:10px;padding:11px;font-size:13px;color:var(--ink)}
+  .field .inp.ph{color:var(--muted)}
+  .upload{border:1.6px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:12px}
+
+  .tabbar{display:flex;border-top:1px solid var(--line);background:var(--white)}
+  .tabbar .tb{flex:1;text-align:center;padding:11px 0 13px;font-size:10px;color:var(--muted);font-weight:600;cursor:pointer}
+  .tabbar .tb .ti{font-size:18px;display:block;margin-bottom:2px}
+  .tabbar .tb.on{color:var(--foliage)}
+
+  /* ---------- ADMIN ---------- */
+  .console{
+    background:var(--white);border:1px solid var(--line);border-radius:18px;
+    overflow:hidden;box-shadow:var(--shadow);display:grid;grid-template-columns:210px 1fr;min-height:640px;
+  }
+  .side{background:var(--foliage);color:#dfe7df;padding:22px 0}
+  .side .brand{font-family:Georgia,serif;font-size:20px;color:#fff;padding:0 22px 22px;display:flex;align-items:center;gap:9px;
+    border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:14px}
+  .side .brand .seed{width:18px;height:18px;border-radius:50% 50% 50% 0;background:linear-gradient(135deg,var(--grain),var(--grain-soft))}
+  .side .nav a{display:flex;align-items:center;gap:11px;padding:11px 22px;font-size:14px;color:#cdd8cd;text-decoration:none;cursor:pointer;border-left:3px solid transparent}
+  .side .nav a.on{background:rgba(0,0,0,.18);color:#fff;border-left-color:var(--grain)}
+  .side .nav a:hover{color:#fff}
+  .side .nav .ic{width:18px;text-align:center}
+  .side .who{margin-top:24px;padding:14px 22px 0;border-top:1px solid rgba(255,255,255,.12);font-size:12px;color:#aebcae}
+
+  .main{padding:24px 28px;overflow:auto}
+  .mhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+  .mhead h2{font-family:Georgia,serif;font-size:23px;color:var(--foliage)}
+  .mhead .crumb{font-size:12px;color:var(--muted);margin-top:2px}
+  .search{background:#faf7f0;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:13px;color:var(--muted);min-width:230px}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+  .kpi{background:linear-gradient(135deg,#f7f2e6,#f2ecdc);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .kpi .kn{font-family:Georgia,serif;font-size:27px;font-weight:700;color:var(--foliage)}
+  .kpi .kl{font-size:12px;color:var(--muted);margin-top:3px}
+  .kpi .kd{font-size:11px;color:var(--ok);margin-top:6px;font-weight:600}
+
+  table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  thead th{background:#f3eee2;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:12px 14px;font-weight:700}
+  tbody td{padding:13px 14px;font-size:13px;border-top:1px solid var(--line)}
+  tbody tr{cursor:pointer;transition:.12s}
+  tbody tr:hover{background:#faf7ef}
+  .who-cell{display:flex;align-items:center;gap:10px}
+  .av{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--foliage-2),var(--grain));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:0 0 auto}
+  .st{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;display:inline-block}
+  .st.rev{background:#f5ecd6;color:var(--warn)}
+  .st.ok{background:#e0efe4;color:var(--ok)}
+  .st.new{background:#eee7da;color:var(--soil)}
+  .st.info{background:#e4ecf2;color:#3a6178}
+  .st.no{background:#f3e0db;color:var(--bad)}
+
+  /* detail drawer */
+  .drawer{margin-top:24px;background:#faf7f0;border:1px solid var(--line);border-radius:16px;padding:22px;display:none}
+  .drawer.show{display:block;animation:fade .3s ease}
+  .drawer .dh{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:16px}
+  .drawer .dh h3{font-family:Georgia,serif;font-size:20px;color:var(--foliage)}
+  .dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px}
+  .dgrid .di .dl{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:700;letter-spacing:.4px}
+  .dgrid .di .dv{font-size:15px;font-weight:600;margin-top:3px;color:var(--soil)}
+  .docs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .doc{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:12px;display:flex;align-items:center;gap:8px}
+  .doc .dico{width:26px;height:26px;border-radius:6px;background:#f3e0db;color:var(--bad);display:flex;align-items:center;justify-content:center;font-size:13px}
+  .actions{display:flex;gap:10px;flex-wrap:wrap}
+  .actions button{font:inherit;font-size:13px;font-weight:700;border-radius:10px;padding:11px 18px;cursor:pointer;border:1.5px solid transparent;transition:.15s}
+  .a-ok{background:var(--ok);color:#fff}
+  .a-info{background:transparent;color:#3a6178;border-color:#3a6178}
+  .a-no{background:transparent;color:var(--bad);border-color:var(--bad)}
+  .actions button:hover{transform:translateY(-1px)}
+
+  .note{font-size:12px;color:var(--muted);margin-top:18px;font-style:italic}
+  .legend{margin-top:30px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6}
+  .legend b{color:var(--soil)}
+
+  @media(max-width:760px){
+    .console{grid-template-columns:1fr}
+    .side{display:none}
+    .kpis{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <div class="logo"><span class="seed"></span>ACRE</div>
+    <span class="tag">Neobank del agro · Mockup MVP · ElipSoft LLC</span>
+  </div>
+  <p class="sub">Prototipo de la <b>versión inicial lanzable</b>: app del productor + backoffice. Centrado en <b>Siembra Fácil</b> (crédito agrícola) gestionado de forma manual. Cuenta Global, Insumos PRO, Clima Seguro y Scoring 4D quedan como <b>"próximamente"</b> hasta confirmar sus dependencias. Pantallas referenciales para alinear el alcance en la reunión, no el diseño final.</p>
+
+  <div class="toggle">
+    <button class="active" onclick="showStage('app',this)">📱 App del productor</button>
+    <button onclick="showStage('admin',this)">🖥️ Panel administrativo</button>
+  </div>
+
+  <!-- ============ APP ============ -->
+  <div class="stage show" id="app">
+    <div class="phones">
+
+      <!-- Phone 1: Home -->
+      <div>
+        <div class="phone"><div class="screen">
+          <div class="notch"></div>
+          <div class="appbar">
+            <div class="hi">Buenas, productor</div>
+            <div class="name">José Ramírez</div>
+            <div class="loc">📍 Finca La Esperanza · 12 ha</div>
+          </div>
+          <div class="appbody">
+            <div class="quick">
+              <div class="q"><div class="qi">🌱</div><div class="ql">Mi finca</div></div>
+              <div class="q"><div class="qi">💰</div><div class="ql">Siembra Fácil</div></div>
+              <div class="q"><div class="qi">🤖</div><div class="ql">Cosecha IA</div></div>
+            </div>
+
+            <div class="card tinted">
+              <div class="ctitle">Siembra Fácil · solicitud activa</div>
+              <div class="credit-amt">$ 4.500</div>
+              <div class="credit-sub">Capital de trabajo · campaña maíz</div>
+              <div style="margin-top:10px"><span class="pill rev">● En revisión</span></div>
+            </div>
+
+            <div class="card">
+              <div class="ctitle">Estado de tu solicitud</div>
+              <div class="tl">
+                <div class="step done"><div class="dot"></div><div><div class="lbl">Solicitud recibida</div><div class="tm">14 jun · 09:12</div></div></div>
+                <div class="step done"><div class="dot"></div><div><div class="lbl">Documentos cargados</div><div class="tm">14 jun · 09:40</div></div></div>
+                <div class="step curr"><div class="dot"></div><div><div class="lbl">En revisión por ACRE</div><div class="tm">En proceso</div></div></div>
+                <div class="step"><div class="dot"></div><div><div class="lbl">Decisión</div><div class="tm">Pendiente</div></div></div>
+              </div>
+            </div>
+
+            <button class="btn">Nueva solicitud · Siembra Fácil</button>
+          </div>
+          <div class="tabbar">
+            <div class="tb on"><span class="ti">🏠</span>Inicio</div>
+            <div class="tb"><span class="ti">🌱</span>Finca</div>
+            <div class="tb"><span class="ti">💰</span>Crédito</div>
+            <div class="tb"><span class="ti">👤</span>Perfil</div>
+          </div>
+        </div></div>
+        <div class="pcap">Inicio · estado en vivo</div>
+      </div>
+
+      <!-- Phone 2: New request -->
+      <div>
+        <div class="phone"><div class="screen">
+          <div class="notch"></div>
+          <div class="appbar">
+            <div class="hi">Siembra Fácil</div>
+            <div class="name">Nueva solicitud</div>
+            <div class="loc">Paso 2 de 3 · Detalles</div>
+          </div>
+          <div class="appbody">
+            <div class="field"><label>¿Cuánto necesitas?</label><div class="inp">$ 4.500</div></div>
+            <div class="field"><label>Propósito</label><div class="inp">Capital de trabajo — siembra</div></div>
+            <div class="field"><label>Cultivo</label><div class="inp">Maíz amarillo</div></div>
+            <div class="field"><label>Plazo estimado</label><div class="inp">Al cierre de cosecha (5 meses)</div></div>
+            <div class="field"><label>Soportes</label>
+              <div class="upload">📎 Toca para adjuntar fotos del cultivo,<br>RIF/cédula y registro de la finca</div>
+            </div>
+            <button class="btn">Continuar</button>
+            <button class="btn ghost" style="margin-top:9px">Guardar borrador</button>
+          </div>
+          <div class="tabbar">
+            <div class="tb"><span class="ti">🏠</span>Inicio</div>
+            <div class="tb"><span class="ti">🌱</span>Finca</div>
+            <div class="tb on"><span class="ti">💰</span>Crédito</div>
+            <div class="tb"><span class="ti">👤</span>Perfil</div>
+          </div>
+        </div></div>
+        <div class="pcap">Siembra Fácil · solicitud guiada</div>
+      </div>
+
+      <!-- Phone 3: Farm profile -->
+      <div>
+        <div class="phone"><div class="screen">
+          <div class="notch"></div>
+          <div class="appbar">
+            <div class="hi">Mi perfil productivo</div>
+            <div class="name">Finca La Esperanza</div>
+            <div class="loc">📍 Portuguesa · 12 hectáreas</div>
+          </div>
+          <div class="appbody">
+            <div class="card">
+              <div class="ctitle">Parcelas registradas</div>
+              <div class="farm-row" style="margin-bottom:12px"><div class="farm-ico">🌽</div><div><div class="fn">Lote norte · Maíz</div><div class="fd">7 ha · ciclo activo</div></div></div>
+              <div class="farm-row"><div class="farm-ico">🫘</div><div><div class="fn">Lote sur · Caraota</div><div class="fd">5 ha · en descanso</div></div></div>
+            </div>
+            <div class="card">
+              <div class="ctitle">Tu perfil ACRE</div>
+              <div class="farm-row"><div class="farm-ico">📊</div><div><div class="fn">Historial: 2 ciclos</div><div class="fd">Sin créditos previos</div></div></div>
+              <div style="margin-top:12px"><span class="pill new">Productor verificado</span></div>
+            </div>
+            <div class="card tinted">
+              <div class="ctitle">Ecosistema ACRE</div>
+              <div style="font-size:13px;color:var(--soil);line-height:1.7">
+                💰 Siembra Fácil · <b style="color:var(--ok)">activo</b><br>
+                🤖 Cosecha IA · <b style="color:var(--ok)">activo</b><br>
+                🏦 Cuenta Global <span style="color:var(--muted)">· próximamente</span><br>
+                🛒 Insumos PRO <span style="color:var(--muted)">· próximamente</span><br>
+                🌦️ Clima Seguro <span style="color:var(--muted)">· próximamente</span><br>
+                🛰️ Scoring 4D <span style="color:var(--muted)">· próximamente</span>
+              </div>
+            </div>
+            <button class="btn ghost">Agregar parcela</button>
+          </div>
+          <div class="tabbar">
+            <div class="tb"><span class="ti">🏠</span>Inicio</div>
+            <div class="tb on"><span class="ti">🌱</span>Finca</div>
+            <div class="tb"><span class="ti">💰</span>Crédito</div>
+            <div class="tb"><span class="ti">👤</span>Perfil</div>
+          </div>
+        </div></div>
+        <div class="pcap">Perfil agrícola</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ ADMIN ============ -->
+  <div class="stage" id="admin">
+    <div class="console">
+      <aside class="side">
+        <div class="brand"><span class="seed"></span>ACRE</div>
+        <nav class="nav">
+          <a class="on"><span class="ic">📊</span> Dashboard</a>
+          <a><span class="ic">📥</span> Solicitudes</a>
+          <a><span class="ic">👥</span> Productores</a>
+          <a><span class="ic">📄</span> Documentos</a>
+          <a><span class="ic">📤</span> Exportar</a>
+          <a><span class="ic">⚙️</span> Ajustes</a>
+        </nav>
+        <div class="who">Analista de crédito<br><b style="color:#fff">M. Quintero</b></div>
+      </aside>
+
+      <main class="main">
+        <div class="mhead">
+          <div>
+            <h2>Bandeja de solicitudes</h2>
+            <div class="crumb">Originación · revisión manual</div>
+          </div>
+          <input class="search" placeholder="🔍  Buscar productor, finca o folio…">
+        </div>
+
+        <div class="kpis">
+          <div class="kpi"><div class="kn">37</div><div class="kl">Solicitudes activas</div><div class="kd">+8 esta semana</div></div>
+          <div class="kpi"><div class="kn">12</div><div class="kl">En revisión</div><div class="kd">5 esperan respuesta</div></div>
+          <div class="kpi"><div class="kn">$ 168K</div><div class="kl">Monto solicitado</div><div class="kd">campaña en curso</div></div>
+          <div class="kpi"><div class="kn">54</div><div class="kl">Productores</div><div class="kd">+11 nuevos</div></div>
+        </div>
+
+        <table>
+          <thead><tr><th>Productor</th><th>Finca</th><th>Monto</th><th>Cultivo</th><th>Estado</th><th>Recibida</th></tr></thead>
+          <tbody>
+            <tr onclick="openDrawer()"><td><div class="who-cell"><div class="av">JR</div>José Ramírez</div></td><td>La Esperanza · 12 ha</td><td><b>$ 4.500</b></td><td>Maíz</td><td><span class="st rev">En revisión</span></td><td>14 jun</td></tr>
+            <tr><td><div class="who-cell"><div class="av">CM</div>Carmen Mota</div></td><td>El Roble · 8 ha</td><td><b>$ 3.200</b></td><td>Caraota</td><td><span class="st info">Info solicitada</span></td><td>14 jun</td></tr>
+            <tr><td><div class="who-cell"><div class="av">LP</div>Luis Peña</div></td><td>San Antonio · 20 ha</td><td><b>$ 9.800</b></td><td>Arroz</td><td><span class="st new">Nueva</span></td><td>15 jun</td></tr>
+            <tr><td><div class="who-cell"><div class="av">AD</div>Ana Díaz</div></td><td>La Vega · 6 ha</td><td><b>$ 2.700</b></td><td>Hortalizas</td><td><span class="st ok">Aprobada</span></td><td>13 jun</td></tr>
+            <tr><td><div class="who-cell"><div class="av">RG</div>Raúl Gómez</div></td><td>Los Mangos · 15 ha</td><td><b>$ 6.400</b></td><td>Sorgo</td><td><span class="st no">Rechazada</span></td><td>12 jun</td></tr>
+          </tbody>
+        </table>
+
+        <!-- detail -->
+        <div class="drawer" id="drawer">
+          <div class="dh">
+            <div>
+              <h3>Solicitud #A-1042 · José Ramírez</h3>
+              <div class="crumb">Finca La Esperanza · Portuguesa · recibida 14 jun 09:12</div>
+            </div>
+            <span class="st rev">En revisión</span>
+          </div>
+          <div class="dgrid">
+            <div class="di"><div class="dl">Monto</div><div class="dv">$ 4.500</div></div>
+            <div class="di"><div class="dl">Propósito</div><div class="dv">Capital de trabajo</div></div>
+            <div class="di"><div class="dl">Cultivo</div><div class="dv">Maíz · 7 ha</div></div>
+            <div class="di"><div class="dl">Plazo</div><div class="dv">Cierre de cosecha</div></div>
+            <div class="di"><div class="dl">Historial</div><div class="dv">2 ciclos · sin mora</div></div>
+            <div class="di"><div class="dl">Score (manual)</div><div class="dv">B · Aceptable</div></div>
+          </div>
+          <div class="dl" style="font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px">Documentos cargados</div>
+          <div class="docs">
+            <div class="doc"><div class="dico">📄</div>Cédula.pdf</div>
+            <div class="doc"><div class="dico">📄</div>RIF.pdf</div>
+            <div class="doc"><div class="dico">📄</div>Registro_finca.pdf</div>
+            <div class="doc"><div class="dico">🖼️</div>Cultivo_3fotos.zip</div>
+          </div>
+          <div class="actions">
+            <button class="a-ok">✓ Aprobar</button>
+            <button class="a-info">Solicitar más información</button>
+            <button class="a-no">Rechazar</button>
+          </div>
+          <p class="note">El analista decide manualmente. El score es referencial — el motor automático llega en Fase 3. Toda acción queda en bitácora para auditoría.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <p class="legend"><b>Alcance del MVP:</b> Siembra Fácil (originación y gestión manual del crédito agrícola) + backoffice + Cosecha IA básica. Cuenta Global (wallet USD), Insumos PRO (marketplace), Clima Seguro (paramétrico) y Scoring 4D Satelital se construyen por fases sobre esta misma arquitectura. <br>Mockup de referencia para la reunión de alineación · Elaborado por ElipSoft LLC</p>
+</div>
+
+<script>
+  function showStage(id, btn){
+    document.querySelectorAll('.stage').forEach(s=>s.classList.remove('show'));
+    document.getElementById(id).classList.add('show');
+    document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  function openDrawer(){
+    const d=document.getElementById('drawer');
+    d.classList.add('show');
+    d.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+</script>
+</body>
+</html>

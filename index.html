@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACRE · Levantamiento interactivo</title>
+<style>
+  :root{
+    --foliage:#1f3d2b;
+    --foliage-2:#2f5740;
+    --grain:#c8862f;
+    --grain-soft:#e6b65c;
+    --paper:#f4efe4;
+    --soil:#3a2e22;
+    --ink:#21261f;
+    --muted:#6f7468;
+    --line:#ddd5c4;
+    --ok:#2f7d4f;
+    --warn:#c8862f;
+    --bad:#a8442f;
+    --white:#fffdf8;
+    --shadow:0 10px 40px rgba(31,61,43,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter','Segoe UI',system-ui,sans-serif;
+    background:
+      radial-gradient(circle at 20% 0%, #e9e2d1 0%, transparent 55%),
+      radial-gradient(circle at 90% 100%, #ece4d2 0%, transparent 50%),
+      var(--paper);
+    color:var(--ink);min-height:100vh;padding:32px 20px 80px;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+  .masthead{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;border-bottom:2px solid var(--foliage);padding-bottom:18px;margin-bottom:8px}
+  .logo{font-family:'Georgia',serif;font-size:34px;font-weight:700;letter-spacing:-.5px;color:var(--foliage);display:flex;align-items:center;gap:10px}
+  .logo .seed{width:26px;height:26px;border-radius:50% 50% 50% 0;background:linear-gradient(135deg,var(--grain),var(--foliage-2));box-shadow:inset -3px -3px 6px rgba(0,0,0,.15)}
+  .tag{font-size:13px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase}
+  .sub{font-size:14px;color:var(--soil);margin:14px 0 22px;max-width:720px;line-height:1.55}
+  .sub b{color:var(--foliage)}
+
+  .progress-wrap{display:flex;align-items:center;gap:16px;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-bottom:26px;flex-wrap:wrap}
+  .progress-wrap .ptxt{font-size:13px;color:var(--soil);font-weight:600;white-space:nowrap}
+  .progress-wrap .ptxt b{font-family:Georgia,serif;font-size:18px;color:var(--foliage)}
+  .bar{flex:1;height:10px;background:#eee4d2;border-radius:999px;overflow:hidden;min-width:160px}
+  .bar .fill{height:100%;background:linear-gradient(90deg,var(--foliage-2),var(--grain));width:0%;transition:width .4s ease;border-radius:999px}
+  .btn-export{font:inherit;font-size:13px;font-weight:700;background:var(--foliage);color:#fff;border:none;border-radius:10px;padding:11px 20px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .btn-export:hover{background:var(--foliage-2);transform:translateY(-1px)}
+  .btn-export.ghost{background:transparent;color:var(--foliage);border:1.5px solid var(--foliage)}
+
+  .modgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
+  .mod{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:20px;position:relative;border-left:5px solid var(--line);transition:.2s}
+  .mod.state-prog{border-left-color:var(--grain)}
+  .mod.state-done{border-left-color:var(--ok)}
+  .mod .mtop{display:flex;align-items:flex-start;gap:13px;margin-bottom:8px}
+  .mod .mico{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--foliage-2),var(--grain));display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto}
+  .mod h3{font-family:Georgia,serif;font-size:19px;color:var(--foliage);line-height:1.15}
+  .mod .mphase{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-top:3px}
+  .mod .mdesc{font-size:13px;color:var(--soil);line-height:1.5;margin:10px 0 16px}
+  .mstatus{position:absolute;top:18px;right:18px;font-size:11px;font-weight:700;padding:4px 11px;border-radius:999px;background:#eee7da;color:var(--muted)}
+  .mod.state-prog .mstatus{background:#f5ecd6;color:var(--warn)}
+  .mod.state-done .mstatus{background:#e0efe4;color:var(--ok)}
+  .mod .mfoot{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .mod .mcount{font-size:12px;color:var(--muted)}
+  .mod .mcount b{color:var(--soil)}
+  .btn-define{font:inherit;font-size:13px;font-weight:700;background:var(--grain);color:#fff;border:none;border-radius:10px;padding:10px 16px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:6px}
+  .btn-define:hover{background:#b3741f}
+  .mod.state-done .btn-define{background:var(--ok)}
+  .mod.state-done .btn-define:hover{background:#256340}
+
+  .overlay{position:fixed;inset:0;background:rgba(31,38,31,.55);backdrop-filter:blur(3px);z-index:50;display:none;opacity:0;transition:opacity .25s}
+  .overlay.show{display:block;opacity:1}
+  .sheet{position:fixed;top:0;right:0;height:100%;width:min(540px,100%);background:var(--paper);z-index:60;box-shadow:-12px 0 50px rgba(0,0,0,.25);transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+  .sheet.show{transform:translateX(0)}
+  .sheet .shead{background:var(--foliage);color:#fff;padding:24px 26px 20px;display:flex;align-items:flex-start;gap:14px}
+  .sheet .shead .sico{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:21px;flex:0 0 auto}
+  .sheet .shead h2{font-family:Georgia,serif;font-size:22px;line-height:1.1}
+  .sheet .shead .ssub{font-size:12px;opacity:.8;margin-top:4px}
+  .sheet .sclose{margin-left:auto;background:rgba(255,255,255,.15);border:none;color:#fff;width:32px;height:32px;border-radius:8px;font-size:18px;cursor:pointer;flex:0 0 auto}
+  .sheet .sclose:hover{background:rgba(255,255,255,.28)}
+  .sbody{flex:1;overflow-y:auto;padding:22px 26px}
+
+  .q{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:17px;margin-bottom:15px}
+  .q .qnum{font-size:11px;font-weight:700;color:var(--grain);letter-spacing:.5px}
+  .q .qtext{font-size:14px;font-weight:600;color:var(--soil);margin:5px 0 13px;line-height:1.4}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;font-size:13px;color:var(--ink);cursor:pointer;transition:.13s;background:var(--white)}
+  .opt:hover{border-color:var(--grain-soft);background:#fcf8ef}
+  .opt .radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto;transition:.13s;position:relative}
+  .opt.sel{border-color:var(--foliage);background:#f3f7f3}
+  .opt.sel .radio{border-color:var(--foliage)}
+  .opt.sel .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--foliage)}
+  .qnote{margin-top:11px}
+  .qnote textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:inherit;font-size:12px;color:var(--ink);background:#faf7f0;resize:vertical;min-height:42px}
+  .qnote label{font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:5px}
+
+  .sfoot{padding:16px 26px;border-top:1px solid var(--line);background:var(--paper);display:flex;gap:10px;align-items:center}
+  .sfoot .savemsg{font-size:12px;color:var(--ok);font-weight:600;margin-right:auto}
+  .sfoot .savemsg.idle{color:var(--muted)}
+  .btn-sheet{font:inherit;font-size:14px;font-weight:700;border-radius:10px;padding:12px 22px;cursor:pointer;border:none;transition:.15s}
+  .btn-sheet.primary{background:var(--foliage);color:#fff}
+  .btn-sheet.primary:hover{background:var(--foliage-2)}
+
+  .emodal{position:fixed;inset:0;background:rgba(31,38,31,.6);z-index:70;display:none;align-items:center;justify-content:center;padding:24px}
+  .emodal.show{display:flex}
+  .ecard{background:var(--paper);border-radius:18px;max-width:640px;width:100%;max-height:86vh;display:flex;flex-direction:column;box-shadow:var(--shadow);overflow:hidden}
+  .ecard .ehead{background:var(--foliage);color:#fff;padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+  .ecard .ehead h2{font-family:Georgia,serif;font-size:20px}
+  .ecard .ehead button{background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:17px}
+  .ebody{padding:20px 24px;overflow-y:auto}
+  .ebody pre{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:16px;font-size:12px;line-height:1.55;white-space:pre-wrap;color:var(--ink);font-family:'SFMono-Regular',Consolas,monospace}
+  .efoot{padding:16px 24px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--foliage);color:#fff;padding:13px 22px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow);z-index:80;opacity:0;pointer-events:none;transition:.3s}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .legend{margin-top:32px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6}
+  .legend b{color:var(--soil)}
+
+  @media(max-width:560px){.modgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead">
+    <div class="logo"><span class="seed"></span>ACRE</div>
+    <span class="tag">Levantamiento interactivo · ElipSoft LLC</span>
+    <a href="pantallas.html" style="margin-left:auto;font-size:13px;color:#1f3d2b;font-weight:700;text-decoration:none;border:1.5px solid #1f3d2b;border-radius:8px;padding:7px 14px">Ver pantallas del MVP →</a>
+  </div>
+  <p class="sub">Recorrido por los <b>seis módulos de ACRE</b> (más una sección transversal) para definir el alcance del proyecto. En cada módulo, abre <b>Definir alcance</b>, responde las preguntas y se guardan en la sesión. Al terminar, <b>exporta el acta</b> con todas las respuestas. Pensado para llenarse en vivo durante la reunión.</p>
+
+  <div class="progress-wrap">
+    <span class="ptxt">Avance del levantamiento: <b id="pcount">0</b> / <b id="ptotal">0</b> respuestas</span>
+    <div class="bar"><div class="fill" id="pfill"></div></div>
+    <button class="btn-export ghost" onclick="resetAll()">Reiniciar</button>
+    <button class="btn-export" onclick="openExport()">Exportar acta</button>
+  </div>
+
+  <div class="modgrid" id="modgrid"></div>
+
+  <p class="legend"><b>Levantamiento interactivo</b> sobre el mockup de ACRE Neobank. Las respuestas viven en esta sesión; usa "Exportar acta" para guardarlas antes de cerrar. <br>Elaborado por ElipSoft LLC</p>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeSheet()"></div>
+<aside class="sheet" id="sheet">
+  <div class="shead">
+    <div class="sico" id="sheetIco">🌱</div>
+    <div>
+      <h2 id="sheetTitle">Módulo</h2>
+      <div class="ssub" id="sheetSub">Definición de alcance</div>
+    </div>
+    <button class="sclose" onclick="closeSheet()">✕</button>
+  </div>
+  <div class="sbody" id="sheetBody"></div>
+  <div class="sfoot">
+    <span class="savemsg idle" id="saveMsg">Las respuestas se guardan automáticamente</span>
+    <button class="btn-sheet primary" onclick="closeSheet()">Listo</button>
+  </div>
+</aside>
+
+<div class="emodal" id="emodal">
+  <div class="ecard">
+    <div class="ehead"><h2>Acta de levantamiento — ACRE</h2><button onclick="closeExport()">✕</button></div>
+    <div class="ebody"><pre id="exportText"></pre></div>
+    <div class="efoot">
+      <button class="btn-export ghost" onclick="copyActa()">Copiar</button>
+      <button class="btn-export" onclick="downloadActa()">Descargar .txt</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MODULES = [
+  {
+    id:"siembra", ico:"💰", name:"Siembra Fácil", phase:"MVP · núcleo",
+    desc:"Crédito agrícola justo, evaluado por datos de campo y alineado a la cosecha.",
+    questions:[
+      {q:"¿El crédito será en dinero, en insumos o mixto?", o:["Dinero","Insumos","Mixto","Por definir"]},
+      {q:"¿Quién aprueba el crédito?", o:["ACRE manual","Aliado financiero","Motor automático","Por definir"]},
+      {q:"¿Ya existen políticas de crédito definidas?", o:["Sí, documentadas","Parciales","No","Por definir"]},
+      {q:"¿Ya tienen fuente de fondeo para prestar?", o:["Sí, confirmada","En gestión","No","Por definir"]},
+      {q:"¿Cómo será el cobro?", o:["Mensual","Al final de cosecha","Por campaña","Por definir"]},
+    ]
+  },
+  {
+    id:"cuenta", ico:"🏦", name:"Cuenta Global", phase:"Fase 3 · cuenta USD",
+    desc:"Cuenta en dólares: proteger ahorro, recibir pagos, remesas, respaldo bancario EE.UU.",
+    questions:[
+      {q:"¿Ya tienen proveedor bancario / BaaS?", o:["Sí, con contrato","En conversación","No","Por definir"]},
+      {q:"¿La cuenta USD estará operativa desde el MVP?", o:["Sí","No, fase posterior","Solo informativa","Por definir"]},
+      {q:"¿Qué operaciones podrá hacer el usuario al inicio?", o:["Ver saldo","Recibir pagos","Transferir/enviar","Ninguna aún"]},
+      {q:"¿Cuenta individual o subcuenta bajo cuenta madre?", o:["Individual","Subcuenta","Por definir"]},
+      {q:"¿Relación formal con VENTUARI FINTECH GROUP?", o:["Sí, formal","Informal","No aplica","Por definir"]},
+    ]
+  },
+  {
+    id:"insumos", ico:"🛒", name:"Insumos PRO", phase:"Fase 2 · marketplace",
+    desc:"Marketplace de insumos a precio competitivo, con opción de pago postcosecha.",
+    questions:[
+      {q:"¿Ya tienen proveedores de insumos?", o:["Sí, varios","Algunos","No","Por definir"]},
+      {q:"¿El marketplace será venta real, catálogo o cotización?", o:["Venta real","Catálogo","Cotización","Por definir"]},
+      {q:"¿Quién gestiona inventario, entrega y facturación?", o:["ACRE","Proveedor","Tercero logístico","Por definir"]},
+      {q:"¿Se podrá pagar con crédito ACRE?", o:["Sí","No","Más adelante","Por definir"]},
+    ]
+  },
+  {
+    id:"clima", ico:"🌦️", name:"Clima Seguro", phase:"Fase 4 · paramétrico",
+    desc:"Seguro paramétrico automático ante sequía, inundación y helada.",
+    questions:[
+      {q:"¿Ya existe aseguradora aliada?", o:["Sí","En gestión","No","Por definir"]},
+      {q:"¿Qué riesgos cubrirá?", o:["Sequía","Inundación","Helada","Varios / por definir"]},
+      {q:"¿Qué proveedor de datos climáticos usarán?", o:["Ya definido","Evaluando","Que proponga ElipSoft","Por definir"]},
+      {q:"¿Activo desde el MVP o fase posterior?", o:["Desde MVP","Fase posterior","Solo informativo","Por definir"]},
+    ]
+  },
+  {
+    id:"cosecha", ico:"🤖", name:"Cosecha IA", phase:"MVP básico",
+    desc:"Asesor agropecuario con IA 24/7: cultivos, plagas, clima y precios.",
+    questions:[
+      {q:"¿Qué nivel de asesoría debe dar?", o:["Solo informativa","Recomendaciones básicas","Diagnóstico avanzado","Por definir"]},
+      {q:"¿Habrá agrónomos humanos supervisando?", o:["Sí","No","Escalamiento puntual","Por definir"]},
+      {q:"¿Integración con fotos de cultivo desde el inicio?", o:["Sí","No","Más adelante","Por definir"]},
+      {q:"¿Alcance del asistente?", o:["Agronómico","Financiero","Ambos","Por definir"]},
+    ]
+  },
+  {
+    id:"scoring", ico:"🛰️", name:"Scoring 4D Satelital", phase:"Fase 5 · riesgo",
+    desc:"Scoring de riesgo con datos declarados + satélite + clima + actividad financiera.",
+    questions:[
+      {q:"¿Ya tienen datos históricos de productores?", o:["Sí","Algunos","No","Por definir"]},
+      {q:"¿Ya tienen proveedor satelital (NDVI)?", o:["Sí","Evaluando","Que proponga ElipSoft","Por definir"]},
+      {q:"¿El score debe ser automático o manual al inicio?", o:["Automático","Manual","Semiautomático","Por definir"]},
+      {q:"¿Captura de coordenadas/parcela desde el MVP?", o:["Sí","No","Más adelante","Por definir"]},
+    ]
+  },
+  {
+    id:"operacion", ico:"⚙️", name:"Operación y país", phase:"Transversal",
+    desc:"Definiciones que cruzan todos los módulos: piloto, roles, auditoría y prioridad.",
+    questions:[
+      {q:"¿En qué país arranca el piloto?", o:["Venezuela","Colombia","México","Perú","Otro / por definir"]},
+      {q:"¿Perfil del primer usuario?", o:["Pequeño productor","Mediano","Cooperativa","Proveedor"]},
+      {q:"¿Qué lanzan primero?", o:["Crédito","Cuenta USD","Marketplace","Ecosistema completo"]},
+      {q:"¿El MVP es para…?", o:["Captar usuarios","Validar mercado","Operar financieramente","Por definir"]},
+      {q:"¿Necesitan auditoría/compliance desde la v1?", o:["Sí","No","Básica","Por definir"]},
+    ]
+  },
+];
+
+const answers = {};
+let totalQ = 0;
+MODULES.forEach(m=>{ answers[m.id]={}; totalQ+=m.questions.length; });
+
+function moduleState(modId){
+  const a=answers[modId]; const total=MODULES.find(m=>m.id===modId).questions.length;
+  const done=Object.values(a).filter(x=>x&&x.opt!=null).length;
+  if(done===0) return {cls:"",label:"Sin definir",done};
+  if(done<total) return {cls:"state-prog",label:done+"/"+total,done};
+  return {cls:"state-done",label:"Definido ✓",done};
+}
+function renderGrid(){
+  const g=document.getElementById("modgrid"); g.innerHTML="";
+  MODULES.forEach(m=>{
+    const s=moduleState(m.id);
+    const total=m.questions.length;
+    const el=document.createElement("div");
+    el.className="mod "+s.cls;
+    el.innerHTML=
+      '<div class="mstatus">'+s.label+'</div>'+
+      '<div class="mtop"><div class="mico">'+m.ico+'</div>'+
+      '<div><h3>'+m.name+'</h3><div class="mphase">'+m.phase+'</div></div></div>'+
+      '<p class="mdesc">'+m.desc+'</p>'+
+      '<div class="mfoot"><span class="mcount"><b>'+s.done+'</b> de '+total+' preguntas</span>'+
+      '<button class="btn-define" onclick="openSheet(\''+m.id+'\')">⊕ Definir alcance</button></div>';
+    g.appendChild(el);
+  });
+  updateProgress();
+}
+function updateProgress(){
+  let done=0;
+  MODULES.forEach(m=>{ done+=Object.values(answers[m.id]).filter(x=>x&&x.opt!=null).length; });
+  document.getElementById("pcount").textContent=done;
+  document.getElementById("ptotal").textContent=totalQ;
+  document.getElementById("pfill").style.width=(totalQ?(done/totalQ*100):0)+"%";
+}
+
+let currentMod=null;
+function openSheet(modId){
+  currentMod=modId;
+  const m=MODULES.find(x=>x.id===modId);
+  document.getElementById("sheetIco").textContent=m.ico;
+  document.getElementById("sheetTitle").textContent=m.name;
+  document.getElementById("sheetSub").textContent=m.phase+" · definición de alcance";
+  const body=document.getElementById("sheetBody"); body.innerHTML="";
+  m.questions.forEach((qq,i)=>{
+    const saved=answers[modId][i]||{};
+    const qel=document.createElement("div"); qel.className="q";
+    let opts="";
+    qq.o.forEach((o,oi)=>{
+      const sel=(saved.opt===oi)?"sel":"";
+      opts+='<div class="opt '+sel+'" onclick="pick(\''+modId+'\','+i+','+oi+')"><span class="radio"></span><span>'+o+'</span></div>';
+    });
+    qel.innerHTML=
+      '<div class="qnum">PREGUNTA '+(i+1)+'</div>'+
+      '<div class="qtext">'+qq.q+'</div>'+
+      '<div class="opts">'+opts+'</div>'+
+      '<div class="qnote"><label>Nota / matiz (opcional)</label>'+
+      '<textarea oninput="note(\''+modId+'\','+i+',this.value)" placeholder="Ej: solo en Colombia, depende de aliado, etc.">'+(saved.note||"")+'</textarea></div>';
+    body.appendChild(qel);
+  });
+  document.getElementById("overlay").classList.add("show");
+  document.getElementById("sheet").classList.add("show");
+}
+function closeSheet(){
+  document.getElementById("overlay").classList.remove("show");
+  document.getElementById("sheet").classList.remove("show");
+  renderGrid();
+}
+function pick(modId,qi,oi){
+  if(!answers[modId][qi]) answers[modId][qi]={};
+  answers[modId][qi].opt=oi;
+  openSheet(modId);
+  flashSave();
+}
+function note(modId,qi,val){
+  if(!answers[modId][qi]) answers[modId][qi]={};
+  answers[modId][qi].note=val;
+  flashSave();
+}
+function flashSave(){
+  const m=document.getElementById("saveMsg");
+  m.classList.remove("idle"); m.textContent="✓ Guardado";
+  clearTimeout(window._st);
+  window._st=setTimeout(function(){m.classList.add("idle");m.textContent="Las respuestas se guardan automáticamente";},1400);
+}
+
+function buildActa(){
+  const d=new Date();
+  const fecha=d.toLocaleDateString("es-VE",{year:"numeric",month:"long",day:"numeric"});
+  let t="ACTA DE LEVANTAMIENTO — ACRE NEOBANK\n";
+  t+="Elaborado por ElipSoft LLC\n";
+  t+="Fecha: "+fecha+"\n";
+  t+="==================================================\n\n";
+  let done=0;
+  MODULES.forEach(m=>{
+    t+="▌ "+m.name.toUpperCase()+"  ("+m.phase+")\n";
+    t+="--------------------------------------------------\n";
+    m.questions.forEach((qq,i)=>{
+      const a=answers[m.id][i]||{};
+      const resp=(a.opt!=null)?qq.o[a.opt]:"— sin responder —";
+      if(a.opt!=null) done++;
+      t+=(i+1)+". "+qq.q+"\n";
+      t+="   -> "+resp+"\n";
+      if(a.note&&a.note.trim()) t+="   Nota: "+a.note.trim()+"\n";
+    });
+    t+="\n";
+  });
+  t+="==================================================\n";
+  t+="Respondidas: "+done+" de "+totalQ+"\n";
+  return t;
+}
+function openExport(){
+  document.getElementById("exportText").textContent=buildActa();
+  document.getElementById("emodal").classList.add("show");
+}
+function closeExport(){ document.getElementById("emodal").classList.remove("show"); }
+function copyActa(){
+  navigator.clipboard.writeText(buildActa()).then(function(){toast("Acta copiada al portapapeles");});
+}
+function downloadActa(){
+  const blob=new Blob([buildActa()],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download="Acta_Levantamiento_ACRE.txt"; a.click();
+  URL.revokeObjectURL(url);
+  toast("Acta descargada");
+}
+function resetAll(){
+  if(!confirm("¿Borrar todas las respuestas de esta sesión?")) return;
+  MODULES.forEach(m=>answers[m.id]={});
+  renderGrid(); toast("Levantamiento reiniciado");
+}
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(window._tt); window._tt=setTimeout(function(){t.classList.remove("show");},2200);
+}
+
+renderGrid();
+</script>
+</body>
+</html>
