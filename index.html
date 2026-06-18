@@ -50,6 +50,10 @@
   .btn-export:hover{background:var(--foliage-2);transform:translateY(-1px)}
   .btn-export.ghost{background:transparent;color:var(--foliage);border:1.5px solid var(--foliage)}
 
+  .done-banner{display:none;align-items:center;gap:10px;background:#e0efe4;border:1px solid #b9dcc4;border-left:5px solid var(--ok);border-radius:12px;padding:14px 20px;margin-bottom:26px;font-size:14px;color:#1d5a37;line-height:1.4}
+  .done-banner.show{display:flex;animation:fade .35s ease}
+  .done-banner b{color:#164a2c}
+
   /* ---- module grid ---- */
   .modgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
   .mod{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:20px;position:relative;border-left:5px solid var(--line);transition:.2s}
@@ -59,7 +63,10 @@
   .mod .mico{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--foliage-2),var(--grain));display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto}
   .mod h3{font-family:Georgia,serif;font-size:19px;color:var(--foliage);line-height:1.15}
   .mod .mphase{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-top:3px}
-  .mod .mdesc{font-size:13px;color:var(--soil);line-height:1.5;margin:10px 0 16px}
+  .mod .mdesc{font-size:13px;color:var(--soil);line-height:1.5;margin:10px 0 14px}
+  .mod .mbar{height:7px;background:#eee4d2;border-radius:999px;overflow:hidden;margin-bottom:14px}
+  .mod .mbar .mfill{height:100%;background:linear-gradient(90deg,var(--foliage-2),var(--grain));width:0%;transition:width .4s ease;border-radius:999px}
+  .mod.state-done .mbar .mfill{background:var(--ok)}
   .mstatus{position:absolute;top:18px;right:18px;font-size:11px;font-weight:700;padding:4px 11px;border-radius:999px;background:#eee7da;color:var(--muted)}
   .mod.state-prog .mstatus{background:#f5ecd6;color:var(--warn)}
   .mod.state-done .mstatus{background:#e0efe4;color:var(--ok)}
@@ -283,7 +290,11 @@
     <span class="ptxt">Avance del levantamiento: <b id="pcount">0</b> / <b id="ptotal">0</b> respuestas</span>
     <div class="bar"><div class="fill" id="pfill"></div></div>
     <button class="btn-export ghost" onclick="resetAll()">Reiniciar</button>
-    <button class="btn-export" onclick="openExport()">Exportar acta</button>
+    <button class="btn-export" id="exportBtn" onclick="openExport()" style="display:none">Exportar acta</button>
+  </div>
+
+  <div class="done-banner" id="doneBanner">
+    🎉 <b>¡Levantamiento completo!</b> Respondiste las <span id="doneTotal">0</span> preguntas. Ya puedes <b>exportar el acta</b>.
   </div>
 
   <div class="modgrid" id="modgrid"></div>
@@ -648,6 +659,7 @@ function renderGrid(){
       '<div class="mtop"><div class="mico">'+m.ico+'</div>'+
       '<div><h3>'+m.name+'</h3><div class="mphase">'+m.phase+'</div></div></div>'+
       '<p class="mdesc">'+m.desc+'</p>'+
+      '<div class="mbar"><div class="mfill" style="width:'+(total?(s.done/total*100):0)+'%"></div></div>'+
       '<div class="mfoot"><span class="mcount"><b>'+s.done+'</b> de '+total+' preguntas</span>'+
       '<button class="btn-define" onclick="openSheet(\''+m.id+'\')">⊕ Definir alcance</button></div>';
     g.appendChild(el);
@@ -660,6 +672,11 @@ function updateProgress(){
   document.getElementById("pcount").textContent=done;
   document.getElementById("ptotal").textContent=totalQ;
   document.getElementById("pfill").style.width=(totalQ?(done/totalQ*100):0)+"%";
+
+  const complete = (done===totalQ && totalQ>0);
+  document.getElementById("exportBtn").style.display = complete ? "" : "none";
+  document.getElementById("doneTotal").textContent = totalQ;
+  document.getElementById("doneBanner").classList.toggle("show", complete);
 }
 
 let currentMod=null;

@@ -72,7 +72,7 @@
     box-shadow:var(--shadow);flex:0 0 auto;
   }
   .phone .screen{
-    background:var(--white);border-radius:32px;overflow:hidden;height:610px;
+    background:var(--white);border-radius:32px;overflow:hidden;height:640px;
     display:flex;flex-direction:column;position:relative;
   }
   .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);
@@ -102,6 +102,8 @@
   .pill.rev{background:#f5ecd6;color:var(--warn)}
   .pill.ok{background:#e0efe4;color:var(--ok)}
   .pill.new{background:#eee7da;color:var(--soil)}
+  .pill.grain{background:var(--grain);color:#fff}
+  .pill.info{background:#e4ecf2;color:#3a6178}
 
   /* timeline */
   .tl{margin-top:6px}
@@ -122,27 +124,76 @@
   .farm-row .fn{font-size:14px;font-weight:600}
   .farm-row .fd{font-size:12px;color:var(--muted)}
 
-  .quick{display:flex;gap:10px;margin-bottom:14px}
-  .quick .q{flex:1;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:13px 8px;text-align:center;cursor:pointer;transition:.15s}
+  .quick{display:flex;gap:9px;margin-bottom:14px}
+  .quick .q{flex:1;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:13px 6px;text-align:center;cursor:pointer;transition:.15s;position:relative}
   .quick .q:hover{border-color:var(--grain);transform:translateY(-2px)}
   .quick .qi{font-size:20px}
-  .quick .ql{font-size:11px;font-weight:600;margin-top:5px;color:var(--soil)}
+  .quick .ql{font-size:10px;font-weight:600;margin-top:5px;color:var(--soil)}
+  .quick .q .qnew{position:absolute;top:-6px;right:-4px;font-size:8px;font-weight:800;background:var(--grain);color:#fff;border-radius:6px;padding:1px 4px}
 
   .btn{display:block;width:100%;text-align:center;background:var(--grain);color:#fff;font:inherit;font-weight:700;
     font-size:14px;border:none;border-radius:12px;padding:13px;cursor:pointer;margin-top:4px;transition:.15s}
   .btn:hover{background:#b3741f}
   .btn.ghost{background:transparent;color:var(--foliage);border:1.5px solid var(--foliage)}
+  .btn.ok{background:var(--ok)}
+  .btn.ok:hover{background:#256340}
 
   .field{margin-bottom:12px}
   .field label{display:block;font-size:12px;font-weight:600;color:var(--soil);margin-bottom:5px}
   .field .inp{background:#faf7f0;border:1px solid var(--line);border-radius:10px;padding:11px;font-size:13px;color:var(--ink)}
   .field .inp.ph{color:var(--muted)}
+  .field input.inp,.field select.inp,.field textarea.inp{width:100%;font:inherit;font-size:13px;outline:none}
+  .field select.inp{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 16px) 17px,calc(100% - 11px) 17px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .field textarea.inp{resize:vertical;min-height:54px}
   .upload{border:1.6px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--muted);font-size:12px}
 
   .tabbar{display:flex;border-top:1px solid var(--line);background:var(--white)}
-  .tabbar .tb{flex:1;text-align:center;padding:11px 0 13px;font-size:10px;color:var(--muted);font-weight:600;cursor:pointer}
-  .tabbar .tb .ti{font-size:18px;display:block;margin-bottom:2px}
+  .tabbar .tb{flex:1;text-align:center;padding:10px 0 12px;font-size:9px;color:var(--muted);font-weight:600;cursor:pointer;position:relative}
+  .tabbar .tb .ti{font-size:17px;display:block;margin-bottom:2px}
   .tabbar .tb.on{color:var(--foliage)}
+  .tabbar .tb .tbadge{position:absolute;top:5px;right:18%;font-size:7px;font-weight:800;background:var(--grain);color:#fff;border-radius:5px;padding:0 3px}
+
+  /* navegación de vistas / subpantallas */
+  .view,.aview{display:none}
+  .view.on,.aview.on{display:block;animation:fade .3s ease}
+  .sub{display:none}
+  .sub.on{display:block}
+
+  .subhead{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .backbtn{background:#eee7da;border:none;border-radius:9px;width:30px;height:30px;font-size:15px;cursor:pointer;color:var(--soil);flex:0 0 auto}
+  .backbtn:hover{background:#e3d9c5}
+  .subhead .stitle{font-size:14px;font-weight:700;color:var(--soil)}
+  .subhead .stepind{font-size:11px;color:var(--muted);font-weight:600;margin-left:auto}
+
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:2px}
+  .chip{border:1.5px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12px;cursor:pointer;background:var(--white);color:var(--soil);font-weight:600;transition:.13s}
+  .chip:hover{border-color:var(--grain-soft)}
+  .chip.on{border-color:var(--foliage);background:#f3f7f3;color:var(--foliage)}
+
+  .linkrow{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid var(--line);border-radius:13px;margin-bottom:10px;cursor:pointer;background:var(--white);transition:.13s}
+  .linkrow:hover{border-color:var(--grain);background:#fcf8ef}
+  .linkrow .lr-main{flex:1}
+  .linkrow .lr-t{font-size:13px;font-weight:600;color:var(--soil)}
+  .linkrow .lr-s{font-size:11px;color:var(--muted);margin-top:2px}
+  .linkrow .chev{margin-left:auto;color:var(--muted);font-size:16px}
+
+  .offer{border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:11px;background:var(--white)}
+  .offer .oh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+  .offer .oname{font-size:13px;font-weight:700;color:var(--soil)}
+  .offer .price{font-family:Georgia,serif;font-size:18px;color:var(--foliage);font-weight:700}
+  .offer .ometa{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+  .offer .btn{padding:9px;font-size:13px;margin-top:0}
+
+  /* chat Cosecha IA */
+  .chat{display:flex;flex-direction:column;gap:11px;margin-bottom:14px}
+  .bubble{max-width:84%;padding:11px 13px;font-size:13px;line-height:1.5;border-radius:15px}
+  .bubble.bot{align-self:flex-start;background:var(--white);border:1px solid var(--line);color:var(--soil);border-bottom-left-radius:5px}
+  .bubble.me{align-self:flex-end;background:#f6e7cd;border:1px solid var(--grain-soft);color:var(--soil);border-bottom-right-radius:5px}
+  .bubble .bt{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--grain);margin-bottom:4px}
+  .bubble.me .bt{color:#a8742a;text-align:right}
+  .chatbar{display:flex;gap:8px;align-items:flex-end}
+  .chatbar .field{flex:1;margin-bottom:0}
+  .chatbar .btn{width:auto;margin-top:0;padding:11px 16px;flex:0 0 auto}
 
   /* ---------- ADMIN ---------- */
   .console{
@@ -157,6 +208,7 @@
   .side .nav a.on{background:rgba(0,0,0,.18);color:#fff;border-left-color:var(--grain)}
   .side .nav a:hover{color:#fff}
   .side .nav .ic{width:18px;text-align:center}
+  .side .nav .navbadge{margin-left:auto;font-size:8px;font-weight:800;background:var(--grain);color:#fff;border-radius:5px;padding:1px 5px}
   .side .who{margin-top:24px;padding:14px 22px 0;border-top:1px solid rgba(255,255,255,.12);font-size:12px;color:#aebcae}
 
   .main{padding:24px 28px;overflow:auto}
@@ -184,6 +236,7 @@
   .st.new{background:#eee7da;color:var(--soil)}
   .st.info{background:#e4ecf2;color:#3a6178}
   .st.no{background:#f3e0db;color:var(--bad)}
+  .st.grain{background:#f5e6cf;color:#9a6314}
 
   /* detail drawer */
   .drawer{margin-top:24px;background:#faf7f0;border:1px solid var(--line);border-radius:16px;padding:22px;display:none}
@@ -203,14 +256,34 @@
   .a-no{background:transparent;color:var(--bad);border-color:var(--bad)}
   .actions button:hover{transform:translateY(-1px)}
 
+  .sec-h{font-family:Georgia,serif;font-size:17px;color:var(--foliage);margin:26px 0 12px}
+  .sec-h:first-child{margin-top:0}
+  .ficha-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:8px}
+  .panel{background:#faf7f0;border:1px solid var(--line);border-radius:14px;padding:18px}
+  .panel h4{font-family:Georgia,serif;font-size:16px;color:var(--foliage);margin-bottom:12px}
+  .kv{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px dashed var(--line)}
+  .kv:last-child{border-bottom:none}
+  .kv .k{color:var(--muted)}
+  .kv .v{color:var(--soil);font-weight:600}
+  .export-opts{display:flex;flex-direction:column;gap:10px;max-width:460px}
+  .export-row{display:flex;align-items:center;gap:12px;background:var(--white);border:1px solid var(--line);border-radius:13px;padding:14px 16px}
+  .export-row .er-t{font-size:13px;font-weight:600;color:var(--soil)}
+  .export-row .er-s{font-size:11px;color:var(--muted);margin-top:2px}
+  .export-row .er-main{flex:1}
+  .export-row .btn{width:auto;margin-top:0;padding:9px 16px;font-size:13px}
+
   .note{font-size:12px;color:var(--muted);margin-top:18px;font-style:italic}
   .legend{margin-top:30px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6}
   .legend b{color:var(--soil)}
+
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--foliage);color:#fff;padding:13px 22px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow);z-index:80;opacity:0;pointer-events:none;transition:.3s}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
   @media(max-width:760px){
     .console{grid-template-columns:1fr}
     .side{display:none}
     .kpis{grid-template-columns:1fr 1fr}
+    .ficha-grid{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -220,7 +293,7 @@
     <div class="logo"><span class="seed"></span>ACRE</div>
     <span class="tag">Neobank del agro · Mockup MVP · ElipSoft LLC</span>
   </div>
-  <p class="sub">Prototipo de la <b>versión inicial lanzable</b>: app del productor + backoffice. Centrado en <b>Siembra Fácil</b> (crédito agrícola) gestionado de forma manual. Cuenta Global, Insumos PRO, Clima Seguro y Scoring 4D quedan como <b>"próximamente"</b> hasta confirmar sus dependencias. Pantallas referenciales para alinear el alcance en la reunión, no el diseño final.</p>
+  <p class="sub">Prototipo <b>navegable</b> de la versión inicial lanzable: app del productor + backoffice. Toca la barra inferior de la app y el menú lateral del panel para recorrer las pantallas. Incluye el módulo nuevo <b>Mi Cosecha en Venta</b> (marketplace de producción).</p>
 
   <div class="toggle">
     <button class="active" onclick="showStage('app',this)">📱 App del productor</button>
@@ -230,125 +303,360 @@
   <!-- ============ APP ============ -->
   <div class="stage show" id="app">
     <div class="phones">
-
-      <!-- Phone 1: Home -->
       <div>
         <div class="phone"><div class="screen">
           <div class="notch"></div>
           <div class="appbar">
-            <div class="hi">Buenas, productor</div>
-            <div class="name">José Ramírez</div>
-            <div class="loc">📍 Finca La Esperanza · 12 ha</div>
+            <div class="hi" id="abHi">Buenas, productor</div>
+            <div class="name" id="abName">José Ramírez</div>
+            <div class="loc" id="abLoc">📍 Finca La Esperanza · 12 ha</div>
           </div>
           <div class="appbody">
-            <div class="quick">
-              <div class="q"><div class="qi">🌱</div><div class="ql">Mi finca</div></div>
-              <div class="q"><div class="qi">💰</div><div class="ql">Siembra Fácil</div></div>
-              <div class="q"><div class="qi">🤖</div><div class="ql">Cosecha IA</div></div>
+
+            <!-- ===== INICIO ===== -->
+            <div class="view on" id="view-inicio">
+              <div class="quick">
+                <div class="q" onclick="appView('finca')"><div class="qi">🌱</div><div class="ql">Mi finca</div></div>
+                <div class="q" onclick="appView('credito')"><div class="qi">💰</div><div class="ql">Siembra Fácil</div></div>
+                <div class="q" onclick="appView('cosecha')"><span class="qnew">NUEVO</span><div class="qi">🌾</div><div class="ql">Vender cosecha</div></div>
+                <div class="q" onclick="appView('cosechaia')"><div class="qi">🤖</div><div class="ql">Cosecha IA</div></div>
+              </div>
+
+              <div class="card tinted">
+                <div class="ctitle">Siembra Fácil · solicitud activa</div>
+                <div class="credit-amt">$ 4.500</div>
+                <div class="credit-sub">Capital de trabajo · campaña maíz</div>
+                <div style="margin-top:10px"><span class="pill rev">● En revisión</span></div>
+              </div>
+
+              <div class="card">
+                <div class="ctitle">Estado de tu solicitud</div>
+                <div class="tl">
+                  <div class="step done"><div class="dot"></div><div><div class="lbl">Solicitud recibida</div><div class="tm">14 jun · 09:12</div></div></div>
+                  <div class="step done"><div class="dot"></div><div><div class="lbl">Documentos cargados</div><div class="tm">14 jun · 09:40</div></div></div>
+                  <div class="step curr"><div class="dot"></div><div><div class="lbl">En revisión por ACRE</div><div class="tm">En proceso</div></div></div>
+                  <div class="step"><div class="dot"></div><div><div class="lbl">Decisión</div><div class="tm">Pendiente</div></div></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="ctitle">🌾 Mi Cosecha en Venta <span class="pill grain" style="margin-left:4px">NUEVO</span></div>
+                <div style="font-size:13px;color:var(--soil);line-height:1.5;margin:4px 0 12px">Tienes <b>1 publicación con ofertas</b>. Revisa quién quiere comprar tu maíz.</div>
+                <button class="btn" onclick="appView('cosecha')">Ver mis publicaciones</button>
+              </div>
+
+              <button class="btn ghost" onclick="appView('credito')">Nueva solicitud · Siembra Fácil</button>
             </div>
 
-            <div class="card tinted">
-              <div class="ctitle">Siembra Fácil · solicitud activa</div>
-              <div class="credit-amt">$ 4.500</div>
-              <div class="credit-sub">Capital de trabajo · campaña maíz</div>
-              <div style="margin-top:10px"><span class="pill rev">● En revisión</span></div>
-            </div>
+            <!-- ===== FINCA ===== -->
+            <div class="view" id="view-finca">
+              <div class="sub sub-home" id="finca-home">
+                <div class="card">
+                  <div class="ctitle">Parcelas registradas</div>
+                  <div class="linkrow" onclick="verParcela('Lote norte · Maíz','7 ha · ciclo activo','🌽','Maíz amarillo','Siembra: 02 abr · Cosecha estimada: sep')">
+                    <div class="farm-ico">🌽</div>
+                    <div class="lr-main"><div class="lr-t">Lote norte · Maíz</div><div class="lr-s">7 ha · ciclo activo</div></div>
+                    <div class="chev">›</div>
+                  </div>
+                  <div class="linkrow" onclick="verParcela('Lote sur · Caraota','5 ha · en descanso','🫘','Caraota negra','En descanso · próxima siembra oct')">
+                    <div class="farm-ico">🫘</div>
+                    <div class="lr-main"><div class="lr-t">Lote sur · Caraota</div><div class="lr-s">5 ha · en descanso</div></div>
+                    <div class="chev">›</div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="ctitle">Tu perfil ACRE</div>
+                  <div class="farm-row"><div class="farm-ico">📊</div><div><div class="fn">Historial: 2 ciclos</div><div class="fd">Sin créditos previos</div></div></div>
+                  <div style="margin-top:12px"><span class="pill new">Productor verificado</span></div>
+                </div>
+                <button class="btn ghost" onclick="toast('Agregar parcela · próximo')">＋ Agregar parcela</button>
+              </div>
 
-            <div class="card">
-              <div class="ctitle">Estado de tu solicitud</div>
-              <div class="tl">
-                <div class="step done"><div class="dot"></div><div><div class="lbl">Solicitud recibida</div><div class="tm">14 jun · 09:12</div></div></div>
-                <div class="step done"><div class="dot"></div><div><div class="lbl">Documentos cargados</div><div class="tm">14 jun · 09:40</div></div></div>
-                <div class="step curr"><div class="dot"></div><div><div class="lbl">En revisión por ACRE</div><div class="tm">En proceso</div></div></div>
-                <div class="step"><div class="dot"></div><div><div class="lbl">Decisión</div><div class="tm">Pendiente</div></div></div>
+              <div class="sub" id="finca-detalle">
+                <div class="subhead">
+                  <button class="backbtn" onclick="appSub('finca','finca-home')">‹</button>
+                  <span class="stitle" id="fdTitle">Parcela</span>
+                </div>
+                <div class="card">
+                  <div class="farm-row" style="margin-bottom:14px"><div class="farm-ico" id="fdIco">🌽</div><div><div class="fn" id="fdName">Lote norte</div><div class="fd" id="fdSub">7 ha</div></div></div>
+                  <div class="kv"><span class="k">Cultivo</span><span class="v" id="fdCrop">Maíz amarillo</span></div>
+                  <div class="kv"><span class="k">Estado</span><span class="v" id="fdState">Ciclo activo</span></div>
+                  <div class="kv"><span class="k">Calendario</span><span class="v" id="fdCal">—</span></div>
+                </div>
+                <div class="card tinted">
+                  <div class="ctitle">Acciones</div>
+                  <button class="btn" onclick="appView('cosecha')">🌾 Publicar esta cosecha</button>
+                  <button class="btn ghost" style="margin-top:9px" onclick="appView('credito')">💰 Solicitar crédito para esta parcela</button>
+                </div>
               </div>
             </div>
 
-            <button class="btn">Nueva solicitud · Siembra Fácil</button>
-          </div>
-          <div class="tabbar">
-            <div class="tb on"><span class="ti">🏠</span>Inicio</div>
-            <div class="tb"><span class="ti">🌱</span>Finca</div>
-            <div class="tb"><span class="ti">💰</span>Crédito</div>
-            <div class="tb"><span class="ti">👤</span>Perfil</div>
-          </div>
-        </div></div>
-        <div class="pcap">Inicio · estado en vivo</div>
-      </div>
+            <!-- ===== CRÉDITO ===== -->
+            <div class="view" id="view-credito">
+              <div class="sub sub-home" id="credito-home">
+                <div class="card tinted">
+                  <div class="ctitle">Siembra Fácil</div>
+                  <div style="font-size:13px;color:var(--soil);line-height:1.5">Crédito agrícola alineado a tu cosecha. Solicita, sube soportes y sigue el estado en vivo.</div>
+                  <button class="btn" style="margin-top:12px" onclick="appSub('credito','credito-s1')">＋ Nueva solicitud</button>
+                </div>
+                <div class="ctitle" style="margin:4px 0 8px;color:var(--muted)">Mis solicitudes</div>
+                <div class="linkrow" onclick="appSub('credito','credito-detalle')">
+                  <div class="farm-ico">💰</div>
+                  <div class="lr-main"><div class="lr-t">$ 4.500 · Maíz</div><div class="lr-s">Solicitud #A-1042 · 14 jun</div></div>
+                  <span class="pill rev">En revisión</span>
+                </div>
+                <div class="linkrow" onclick="appSub('credito','credito-detalle')">
+                  <div class="farm-ico">💰</div>
+                  <div class="lr-main"><div class="lr-t">$ 2.100 · Caraota</div><div class="lr-s">Solicitud #A-0987 · ciclo anterior</div></div>
+                  <span class="pill ok">Pagada</span>
+                </div>
+              </div>
 
-      <!-- Phone 2: New request -->
-      <div>
-        <div class="phone"><div class="screen">
-          <div class="notch"></div>
-          <div class="appbar">
-            <div class="hi">Siembra Fácil</div>
-            <div class="name">Nueva solicitud</div>
-            <div class="loc">Paso 2 de 3 · Detalles</div>
-          </div>
-          <div class="appbody">
-            <div class="field"><label>¿Cuánto necesitas?</label><div class="inp">$ 4.500</div></div>
-            <div class="field"><label>Propósito</label><div class="inp">Capital de trabajo — siembra</div></div>
-            <div class="field"><label>Cultivo</label><div class="inp">Maíz amarillo</div></div>
-            <div class="field"><label>Plazo estimado</label><div class="inp">Al cierre de cosecha (5 meses)</div></div>
-            <div class="field"><label>Soportes</label>
-              <div class="upload">📎 Toca para adjuntar fotos del cultivo,<br>RIF/cédula y registro de la finca</div>
-            </div>
-            <button class="btn">Continuar</button>
-            <button class="btn ghost" style="margin-top:9px">Guardar borrador</button>
-          </div>
-          <div class="tabbar">
-            <div class="tb"><span class="ti">🏠</span>Inicio</div>
-            <div class="tb"><span class="ti">🌱</span>Finca</div>
-            <div class="tb on"><span class="ti">💰</span>Crédito</div>
-            <div class="tb"><span class="ti">👤</span>Perfil</div>
-          </div>
-        </div></div>
-        <div class="pcap">Siembra Fácil · solicitud guiada</div>
-      </div>
+              <!-- paso 1 -->
+              <div class="sub" id="credito-s1">
+                <div class="subhead">
+                  <button class="backbtn" onclick="appSub('credito','credito-home')">‹</button>
+                  <span class="stitle">Nueva solicitud</span>
+                  <span class="stepind">Paso 1 de 3</span>
+                </div>
+                <div class="field"><label>¿Cuánto necesitas? (USD)</label><input class="inp" type="text" value="4.500"></div>
+                <div class="field"><label>Propósito</label>
+                  <select class="inp"><option>Capital de trabajo — siembra</option><option>Compra de insumos</option><option>Maquinaria / equipo</option></select>
+                </div>
+                <div class="field"><label>Parcela / cultivo</label>
+                  <select class="inp"><option>Lote norte · Maíz amarillo</option><option>Lote sur · Caraota negra</option></select>
+                </div>
+                <button class="btn" onclick="appSub('credito','credito-s2')">Continuar</button>
+              </div>
 
-      <!-- Phone 3: Farm profile -->
-      <div>
-        <div class="phone"><div class="screen">
-          <div class="notch"></div>
-          <div class="appbar">
-            <div class="hi">Mi perfil productivo</div>
-            <div class="name">Finca La Esperanza</div>
-            <div class="loc">📍 Portuguesa · 12 hectáreas</div>
-          </div>
-          <div class="appbody">
-            <div class="card">
-              <div class="ctitle">Parcelas registradas</div>
-              <div class="farm-row" style="margin-bottom:12px"><div class="farm-ico">🌽</div><div><div class="fn">Lote norte · Maíz</div><div class="fd">7 ha · ciclo activo</div></div></div>
-              <div class="farm-row"><div class="farm-ico">🫘</div><div><div class="fn">Lote sur · Caraota</div><div class="fd">5 ha · en descanso</div></div></div>
-            </div>
-            <div class="card">
-              <div class="ctitle">Tu perfil ACRE</div>
-              <div class="farm-row"><div class="farm-ico">📊</div><div><div class="fn">Historial: 2 ciclos</div><div class="fd">Sin créditos previos</div></div></div>
-              <div style="margin-top:12px"><span class="pill new">Productor verificado</span></div>
-            </div>
-            <div class="card tinted">
-              <div class="ctitle">Ecosistema ACRE</div>
-              <div style="font-size:13px;color:var(--soil);line-height:1.7">
-                💰 Siembra Fácil · <b style="color:var(--ok)">activo</b><br>
-                🤖 Cosecha IA · <b style="color:var(--ok)">activo</b><br>
-                🏦 Cuenta Global <span style="color:var(--muted)">· próximamente</span><br>
-                🛒 Insumos PRO <span style="color:var(--muted)">· próximamente</span><br>
-                🌦️ Clima Seguro <span style="color:var(--muted)">· próximamente</span><br>
-                🛰️ Scoring 4D <span style="color:var(--muted)">· próximamente</span>
+              <!-- paso 2 -->
+              <div class="sub" id="credito-s2">
+                <div class="subhead">
+                  <button class="backbtn" onclick="appSub('credito','credito-s1')">‹</button>
+                  <span class="stitle">Nueva solicitud</span>
+                  <span class="stepind">Paso 2 de 3</span>
+                </div>
+                <div class="field"><label>Plazo estimado</label>
+                  <select class="inp"><option>Al cierre de cosecha (5 meses)</option><option>Por campaña</option><option>Mensual</option></select>
+                </div>
+                <div class="field"><label>Monto a recibir</label><div class="inp">$ 4.500 · desembolso a Cuenta ACRE</div></div>
+                <div class="field"><label>Soportes</label>
+                  <div class="upload">📎 Toca para adjuntar fotos del cultivo,<br>RIF/cédula y registro de la finca</div>
+                </div>
+                <button class="btn" onclick="appSub('credito','credito-s3')">Continuar</button>
+              </div>
+
+              <!-- paso 3 -->
+              <div class="sub" id="credito-s3">
+                <div class="subhead">
+                  <button class="backbtn" onclick="appSub('credito','credito-s2')">‹</button>
+                  <span class="stitle">Confirmar</span>
+                  <span class="stepind">Paso 3 de 3</span>
+                </div>
+                <div class="card">
+                  <div class="ctitle">Resumen de tu solicitud</div>
+                  <div class="kv"><span class="k">Monto</span><span class="v">$ 4.500</span></div>
+                  <div class="kv"><span class="k">Propósito</span><span class="v">Capital de trabajo</span></div>
+                  <div class="kv"><span class="k">Cultivo</span><span class="v">Maíz · 7 ha</span></div>
+                  <div class="kv"><span class="k">Plazo</span><span class="v">Cierre de cosecha</span></div>
+                </div>
+                <button class="btn ok" onclick="enviarSolicitud()">✓ Enviar solicitud</button>
+              </div>
+
+              <!-- detalle -->
+              <div class="sub" id="credito-detalle">
+                <div class="subhead">
+                  <button class="backbtn" onclick="appSub('credito','credito-home')">‹</button>
+                  <span class="stitle">Solicitud #A-1042</span>
+                  <span class="pill rev" style="margin-left:auto">En revisión</span>
+                </div>
+                <div class="card tinted">
+                  <div class="credit-amt">$ 4.500</div>
+                  <div class="credit-sub">Capital de trabajo · campaña maíz · 7 ha</div>
+                </div>
+                <div class="card">
+                  <div class="ctitle">Estado</div>
+                  <div class="tl">
+                    <div class="step done"><div class="dot"></div><div><div class="lbl">Solicitud recibida</div><div class="tm">14 jun · 09:12</div></div></div>
+                    <div class="step done"><div class="dot"></div><div><div class="lbl">Documentos cargados</div><div class="tm">14 jun · 09:40</div></div></div>
+                    <div class="step curr"><div class="dot"></div><div><div class="lbl">En revisión por ACRE</div><div class="tm">En proceso</div></div></div>
+                    <div class="step"><div class="dot"></div><div><div class="lbl">Decisión</div><div class="tm">Pendiente</div></div></div>
+                  </div>
+                </div>
               </div>
             </div>
-            <button class="btn ghost">Agregar parcela</button>
+
+            <!-- ===== MI COSECHA EN VENTA ===== -->
+            <div class="view" id="view-cosecha">
+              <div class="sub sub-home" id="cosecha-home">
+                <div class="card tinted">
+                  <div class="ctitle">🌾 Mi Cosecha en Venta <span class="pill grain" style="margin-left:4px">NUEVO</span></div>
+                  <div style="font-size:13px;color:var(--soil);line-height:1.5">Publica tu producción, recibe ofertas de compradores y elige a quién venderle.</div>
+                  <button class="btn" style="margin-top:12px" onclick="appSub('cosecha','cosecha-publicar')">＋ Publicar cosecha</button>
+                </div>
+                <div class="ctitle" style="margin:4px 0 8px;color:var(--muted)">Mis publicaciones</div>
+                <div class="linkrow" onclick="verPublicacion('Maíz amarillo','12 toneladas','con-ofertas')">
+                  <div class="farm-ico">🌽</div>
+                  <div class="lr-main"><div class="lr-t">Maíz amarillo · 12 ton</div><div class="lr-s">3 ofertas recibidas</div></div>
+                  <span class="pill grain">Con ofertas</span>
+                </div>
+                <div class="linkrow" onclick="verPublicacion('Caraota negra','4 toneladas','publicada')">
+                  <div class="farm-ico">🫘</div>
+                  <div class="lr-main"><div class="lr-t">Caraota negra · 4 ton</div><div class="lr-s">Publicada · sin ofertas aún</div></div>
+                  <span class="pill new">Publicada</span>
+                </div>
+                <div class="linkrow" onclick="verPublicacion('Arroz paddy','20 toneladas','adjudicada')">
+                  <div class="farm-ico">🌾</div>
+                  <div class="lr-main"><div class="lr-t">Arroz paddy · 20 ton</div><div class="lr-s">Vendido a Molinos San Simón</div></div>
+                  <span class="pill ok">Adjudicada</span>
+                </div>
+              </div>
+
+              <!-- publicar -->
+              <div class="sub" id="cosecha-publicar">
+                <div class="subhead">
+                  <button class="backbtn" onclick="appSub('cosecha','cosecha-home')">‹</button>
+                  <span class="stitle">Publicar cosecha</span>
+                </div>
+                <div class="field"><label>Cultivo</label>
+                  <select class="inp"><option>Maíz amarillo</option><option>Caraota negra</option><option>Arroz paddy</option><option>Sorgo</option><option>Café</option><option>Hortalizas</option></select>
+                </div>
+                <div class="field"><label>Tipo de cosecha</label>
+                  <div class="chips">
+                    <div class="chip on" onclick="pickChip(this)">Cosechada</div>
+                    <div class="chip" onclick="pickChip(this)">Estimada</div>
+                  </div>
+                </div>
+                <div class="field"><label>Cantidad</label><input class="inp" type="text" value="12"></div>
+                <div class="field"><label>Unidad</label>
+                  <div class="chips">
+                    <div class="chip" onclick="pickChip(this)">kg</div>
+                    <div class="chip" onclick="pickChip(this)">quintales</div>
+                    <div class="chip on" onclick="pickChip(this)">toneladas</div>
+                  </div>
+                </div>
+                <div class="field"><label>Calidad</label>
+                  <select class="inp"><option>Primera</option><option>Segunda</option><option>Comercial</option></select>
+                </div>
+                <div class="field"><label>Ubicación de retiro</label><input class="inp" type="text" value="Finca La Esperanza · Portuguesa"></div>
+                <div class="field"><label>Disponible desde</label><input class="inp" type="text" value="20 sep 2026"></div>
+                <div class="field"><label>Precio</label>
+                  <div class="chips">
+                    <div class="chip on" onclick="pickChip(this)">Abierto a ofertas</div>
+                    <div class="chip" onclick="pickChip(this)">Precio de referencia</div>
+                  </div>
+                </div>
+                <button class="btn ok" onclick="guardarPublicacion()">✓ Publicar en el mercado</button>
+              </div>
+
+              <!-- detalle + ofertas -->
+              <div class="sub" id="cosecha-detalle">
+                <div class="subhead">
+                  <button class="backbtn" onclick="appSub('cosecha','cosecha-home')">‹</button>
+                  <span class="stitle" id="pubTitle">Maíz amarillo</span>
+                  <span class="pill grain" id="pubState" style="margin-left:auto">Con ofertas</span>
+                </div>
+                <div class="card tinted">
+                  <div class="ctitle">Publicación</div>
+                  <div class="kv"><span class="k">Cantidad</span><span class="v" id="pubQty">12 toneladas</span></div>
+                  <div class="kv"><span class="k">Calidad</span><span class="v">Primera</span></div>
+                  <div class="kv"><span class="k">Retiro</span><span class="v">Portuguesa</span></div>
+                  <div class="kv"><span class="k">Disponible</span><span class="v">20 sep 2026</span></div>
+                </div>
+
+                <div id="ofertasBox">
+                  <div class="ctitle" style="margin:4px 0 8px;color:var(--muted)">Ofertas recibidas</div>
+                  <div class="offer">
+                    <div class="oh"><span class="oname">Agroindustrias del Llano</span><span class="price">$310<span style="font-size:11px;color:var(--muted)">/ton</span></span></div>
+                    <div class="ometa">Quiere 12 ton · pago a 15 días · retiro en finca</div>
+                    <button class="btn" onclick="elegirOferta('Agroindustrias del Llano')">Vender a este comprador</button>
+                  </div>
+                  <div class="offer">
+                    <div class="oh"><span class="oname">Cooperativa El Trigal</span><span class="price">$300<span style="font-size:11px;color:var(--muted)">/ton</span></span></div>
+                    <div class="ometa">Quiere 12 ton · 50% anticipo · retiro en finca</div>
+                    <button class="btn" onclick="elegirOferta('Cooperativa El Trigal')">Vender a este comprador</button>
+                  </div>
+                  <div class="offer">
+                    <div class="oh"><span class="oname">Molinos San Simón</span><span class="price">$295<span style="font-size:11px;color:var(--muted)">/ton</span></span></div>
+                    <div class="ometa">Quiere 8 ton · pago contra entrega · transporte propio</div>
+                    <button class="btn" onclick="elegirOferta('Molinos San Simón')">Vender a este comprador</button>
+                  </div>
+                </div>
+                <div id="sinOfertas" style="display:none">
+                  <div class="card" style="text-align:center;color:var(--muted);font-size:13px;padding:24px">Aún no hay ofertas. Te avisaremos cuando un comprador haga la primera.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== COSECHA IA ===== -->
+            <div class="view" id="view-cosechaia">
+              <div class="card">
+                <div class="farm-row"><div class="farm-ico">🤖</div><div><div class="fn">Cosecha IA</div><div class="fd">Asesor agropecuario · en línea 24/7</div></div></div>
+              </div>
+
+              <div class="chat">
+                <div class="bubble me"><div class="bt">Tú</div>Tengo manchas amarillas en las hojas del maíz, ¿qué puede ser?</div>
+                <div class="bubble bot"><div class="bt">Cosecha IA</div>Las manchas amarillas suelen tener varias causas: <b>deficiencia de nitrógeno</b> (amarilleo desde la punta de hojas viejas), <b>exceso de humedad</b> o encharcamiento, o una <b>posible plaga/hongo</b> si las manchas tienen bordes definidos. Observa el patrón: ¿empieza en hojas bajas o nuevas? Antes de aplicar cualquier producto, confírmalo con un <b>agrónomo local</b>.</div>
+                <div class="bubble me"><div class="bt">Tú</div>¿A qué precio está el maíz esta semana?</div>
+                <div class="bubble bot"><div class="bt">Cosecha IA</div>El maíz amarillo está esta semana en un rango referencial de <b>$290–$315 por tonelada</b> según calidad y zona. Si ya tienes cosecha lista, puedes publicarla en <b>🌾 Mi Cosecha en Venta</b> y recibir ofertas de compradores.</div>
+              </div>
+
+              <div class="ctitle" style="color:var(--muted);margin-bottom:8px">Sugerencias</div>
+              <div class="chips" style="margin-bottom:14px">
+                <div class="chip" onclick="toast('Cosecha IA · respondiendo…')">¿Cuándo fertilizar?</div>
+                <div class="chip" onclick="toast('Cosecha IA · respondiendo…')">Precio del maíz hoy</div>
+                <div class="chip" onclick="toast('Cosecha IA · respondiendo…')">Plagas comunes</div>
+                <div class="chip" onclick="toast('Cosecha IA · respondiendo…')">¿Listo para cosechar?</div>
+              </div>
+
+              <div class="chatbar">
+                <div class="field"><input class="inp" type="text" placeholder="Escríbele a Cosecha IA…"></div>
+                <button class="btn" onclick="toast('Cosecha IA · respondiendo…')">➤</button>
+              </div>
+
+              <p class="note">Orientación general — no sustituye asesoría técnica agronómica local.</p>
+            </div>
+
+            <!-- ===== PERFIL ===== -->
+            <div class="view" id="view-perfil">
+              <div class="card">
+                <div class="farm-row"><div class="farm-ico">👤</div><div><div class="fn">José Ramírez</div><div class="fd">📍 Portuguesa, Venezuela</div></div></div>
+                <div style="margin-top:12px"><span class="pill new">Productor verificado</span></div>
+              </div>
+              <div class="card">
+                <div class="ctitle">Mis documentos</div>
+                <div class="docs">
+                  <div class="doc"><div class="dico">📄</div>Cédula.pdf</div>
+                  <div class="doc"><div class="dico">📄</div>RIF.pdf</div>
+                  <div class="doc"><div class="dico">📄</div>Registro_finca.pdf</div>
+                </div>
+              </div>
+              <div class="card tinted">
+                <div class="ctitle">Ecosistema ACRE</div>
+                <div style="font-size:13px;color:var(--soil);line-height:1.7">
+                  💰 Siembra Fácil · <b style="color:var(--ok)">activo</b><br>
+                  🤖 Cosecha IA · <b style="color:var(--ok)">activo</b><br>
+                  🌾 Mi Cosecha en Venta · <b style="color:var(--grain)">NUEVO</b><br>
+                  🏦 Cuenta Global <span style="color:var(--muted)">· próximamente</span><br>
+                  🛒 Insumos PRO <span style="color:var(--muted)">· próximamente</span><br>
+                  🌦️ Clima Seguro <span style="color:var(--muted)">· próximamente</span><br>
+                  🛰️ Scoring 4D <span style="color:var(--muted)">· próximamente</span>
+                </div>
+              </div>
+              <button class="btn ghost" onclick="toast('Soporte · chat con ACRE')">💬 Soporte</button>
+            </div>
+
           </div>
           <div class="tabbar">
-            <div class="tb"><span class="ti">🏠</span>Inicio</div>
-            <div class="tb on"><span class="ti">🌱</span>Finca</div>
-            <div class="tb"><span class="ti">💰</span>Crédito</div>
-            <div class="tb"><span class="ti">👤</span>Perfil</div>
+            <div class="tb on" data-view="inicio" onclick="appView('inicio')"><span class="ti">🏠</span>Inicio</div>
+            <div class="tb" data-view="finca" onclick="appView('finca')"><span class="ti">🌱</span>Finca</div>
+            <div class="tb" data-view="credito" onclick="appView('credito')"><span class="ti">💰</span>Crédito</div>
+            <div class="tb" data-view="cosecha" onclick="appView('cosecha')"><span class="tbadge">NEW</span><span class="ti">🌾</span>Vender</div>
+            <div class="tb" data-view="perfil" onclick="appView('perfil')"><span class="ti">👤</span>Perfil</div>
           </div>
         </div></div>
-        <div class="pcap">Perfil agrícola</div>
+        <div class="pcap">App del productor · navega con la barra inferior</div>
       </div>
-
     </div>
   </div>
 
@@ -358,93 +666,343 @@
       <aside class="side">
         <div class="brand"><span class="seed"></span>ACRE</div>
         <nav class="nav">
-          <a class="on"><span class="ic">📊</span> Dashboard</a>
-          <a><span class="ic">📥</span> Solicitudes</a>
-          <a><span class="ic">👥</span> Productores</a>
-          <a><span class="ic">📄</span> Documentos</a>
-          <a><span class="ic">📤</span> Exportar</a>
-          <a><span class="ic">⚙️</span> Ajustes</a>
+          <a data-view="dashboard" onclick="adminView('dashboard')"><span class="ic">📊</span> Dashboard</a>
+          <a data-view="solicitudes" onclick="adminView('solicitudes')"><span class="ic">📥</span> Solicitudes</a>
+          <a data-view="productores" onclick="adminView('productores')"><span class="ic">👥</span> Productores</a>
+          <a data-view="documentos" onclick="adminView('documentos')"><span class="ic">📄</span> Documentos</a>
+          <a data-view="mercado" onclick="adminView('mercado')"><span class="ic">🌾</span> Mercado de Cosecha<span class="navbadge">NEW</span></a>
+          <a data-view="exportar" onclick="adminView('exportar')"><span class="ic">📤</span> Exportar</a>
+          <a data-view="ajustes" onclick="adminView('ajustes')"><span class="ic">⚙️</span> Ajustes</a>
         </nav>
         <div class="who">Analista de crédito<br><b style="color:#fff">M. Quintero</b></div>
       </aside>
 
       <main class="main">
-        <div class="mhead">
-          <div>
-            <h2>Bandeja de solicitudes</h2>
-            <div class="crumb">Originación · revisión manual</div>
+
+        <!-- DASHBOARD -->
+        <div class="aview" id="aview-dashboard">
+          <div class="mhead">
+            <div><h2>Dashboard</h2><div class="crumb">Resumen operativo · campaña en curso</div></div>
+            <input class="search" placeholder="🔍  Buscar…">
           </div>
-          <input class="search" placeholder="🔍  Buscar productor, finca o folio…">
-        </div>
-
-        <div class="kpis">
-          <div class="kpi"><div class="kn">37</div><div class="kl">Solicitudes activas</div><div class="kd">+8 esta semana</div></div>
-          <div class="kpi"><div class="kn">12</div><div class="kl">En revisión</div><div class="kd">5 esperan respuesta</div></div>
-          <div class="kpi"><div class="kn">$ 168K</div><div class="kl">Monto solicitado</div><div class="kd">campaña en curso</div></div>
-          <div class="kpi"><div class="kn">54</div><div class="kl">Productores</div><div class="kd">+11 nuevos</div></div>
-        </div>
-
-        <table>
-          <thead><tr><th>Productor</th><th>Finca</th><th>Monto</th><th>Cultivo</th><th>Estado</th><th>Recibida</th></tr></thead>
-          <tbody>
-            <tr onclick="openDrawer()"><td><div class="who-cell"><div class="av">JR</div>José Ramírez</div></td><td>La Esperanza · 12 ha</td><td><b>$ 4.500</b></td><td>Maíz</td><td><span class="st rev">En revisión</span></td><td>14 jun</td></tr>
-            <tr><td><div class="who-cell"><div class="av">CM</div>Carmen Mota</div></td><td>El Roble · 8 ha</td><td><b>$ 3.200</b></td><td>Caraota</td><td><span class="st info">Info solicitada</span></td><td>14 jun</td></tr>
-            <tr><td><div class="who-cell"><div class="av">LP</div>Luis Peña</div></td><td>San Antonio · 20 ha</td><td><b>$ 9.800</b></td><td>Arroz</td><td><span class="st new">Nueva</span></td><td>15 jun</td></tr>
-            <tr><td><div class="who-cell"><div class="av">AD</div>Ana Díaz</div></td><td>La Vega · 6 ha</td><td><b>$ 2.700</b></td><td>Hortalizas</td><td><span class="st ok">Aprobada</span></td><td>13 jun</td></tr>
-            <tr><td><div class="who-cell"><div class="av">RG</div>Raúl Gómez</div></td><td>Los Mangos · 15 ha</td><td><b>$ 6.400</b></td><td>Sorgo</td><td><span class="st no">Rechazada</span></td><td>12 jun</td></tr>
-          </tbody>
-        </table>
-
-        <!-- detail -->
-        <div class="drawer" id="drawer">
-          <div class="dh">
-            <div>
-              <h3>Solicitud #A-1042 · José Ramírez</h3>
-              <div class="crumb">Finca La Esperanza · Portuguesa · recibida 14 jun 09:12</div>
+          <div class="kpis">
+            <div class="kpi"><div class="kn">37</div><div class="kl">Solicitudes activas</div><div class="kd">+8 esta semana</div></div>
+            <div class="kpi"><div class="kn">12</div><div class="kl">En revisión</div><div class="kd">5 esperan respuesta</div></div>
+            <div class="kpi"><div class="kn">$ 168K</div><div class="kl">Monto solicitado</div><div class="kd">campaña en curso</div></div>
+            <div class="kpi"><div class="kn">54</div><div class="kl">Productores</div><div class="kd">+11 nuevos</div></div>
+          </div>
+          <div class="ficha-grid">
+            <div class="panel">
+              <h4>Actividad reciente</h4>
+              <div class="kv"><span class="k">José Ramírez · solicitud</span><span class="v">hace 2 h</span></div>
+              <div class="kv"><span class="k">Ana Díaz · aprobada</span><span class="v">hace 5 h</span></div>
+              <div class="kv"><span class="k">Maíz 12 ton · 3 ofertas</span><span class="v">hace 6 h</span></div>
+              <div class="kv"><span class="k">Luis Peña · nueva</span><span class="v">ayer</span></div>
             </div>
-            <span class="st rev">En revisión</span>
+            <div class="panel">
+              <h4>Solicitudes por estado</h4>
+              <div class="kv"><span class="k">Nuevas</span><span class="v"><span class="st new">9</span></span></div>
+              <div class="kv"><span class="k">En revisión</span><span class="v"><span class="st rev">12</span></span></div>
+              <div class="kv"><span class="k">Aprobadas</span><span class="v"><span class="st ok">14</span></span></div>
+              <div class="kv"><span class="k">Rechazadas</span><span class="v"><span class="st no">2</span></span></div>
+            </div>
           </div>
-          <div class="dgrid">
-            <div class="di"><div class="dl">Monto</div><div class="dv">$ 4.500</div></div>
-            <div class="di"><div class="dl">Propósito</div><div class="dv">Capital de trabajo</div></div>
-            <div class="di"><div class="dl">Cultivo</div><div class="dv">Maíz · 7 ha</div></div>
-            <div class="di"><div class="dl">Plazo</div><div class="dv">Cierre de cosecha</div></div>
-            <div class="di"><div class="dl">Historial</div><div class="dv">2 ciclos · sin mora</div></div>
-            <div class="di"><div class="dl">Score (manual)</div><div class="dv">B · Aceptable</div></div>
-          </div>
-          <div class="dl" style="font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px">Documentos cargados</div>
-          <div class="docs">
-            <div class="doc"><div class="dico">📄</div>Cédula.pdf</div>
-            <div class="doc"><div class="dico">📄</div>RIF.pdf</div>
-            <div class="doc"><div class="dico">📄</div>Registro_finca.pdf</div>
-            <div class="doc"><div class="dico">🖼️</div>Cultivo_3fotos.zip</div>
-          </div>
-          <div class="actions">
-            <button class="a-ok">✓ Aprobar</button>
-            <button class="a-info">Solicitar más información</button>
-            <button class="a-no">Rechazar</button>
-          </div>
-          <p class="note">El analista decide manualmente. El score es referencial — el motor automático llega en Fase 3. Toda acción queda en bitácora para auditoría.</p>
         </div>
+
+        <!-- SOLICITUDES -->
+        <div class="aview" id="aview-solicitudes">
+          <div class="mhead">
+            <div><h2>Bandeja de solicitudes</h2><div class="crumb">Originación · revisión manual</div></div>
+            <input class="search" placeholder="🔍  Buscar productor, finca o folio…">
+          </div>
+          <table>
+            <thead><tr><th>Productor</th><th>Finca</th><th>Monto</th><th>Cultivo</th><th>Estado</th><th>Recibida</th></tr></thead>
+            <tbody>
+              <tr onclick="openDrawer()"><td><div class="who-cell"><div class="av">JR</div>José Ramírez</div></td><td>La Esperanza · 12 ha</td><td><b>$ 4.500</b></td><td>Maíz</td><td><span class="st rev">En revisión</span></td><td>14 jun</td></tr>
+              <tr onclick="openDrawer()"><td><div class="who-cell"><div class="av">CM</div>Carmen Mota</div></td><td>El Roble · 8 ha</td><td><b>$ 3.200</b></td><td>Caraota</td><td><span class="st info">Info solicitada</span></td><td>14 jun</td></tr>
+              <tr onclick="openDrawer()"><td><div class="who-cell"><div class="av">LP</div>Luis Peña</div></td><td>San Antonio · 20 ha</td><td><b>$ 9.800</b></td><td>Arroz</td><td><span class="st new">Nueva</span></td><td>15 jun</td></tr>
+              <tr onclick="openDrawer()"><td><div class="who-cell"><div class="av">AD</div>Ana Díaz</div></td><td>La Vega · 6 ha</td><td><b>$ 2.700</b></td><td>Hortalizas</td><td><span class="st ok">Aprobada</span></td><td>13 jun</td></tr>
+              <tr onclick="openDrawer()"><td><div class="who-cell"><div class="av">RG</div>Raúl Gómez</div></td><td>Los Mangos · 15 ha</td><td><b>$ 6.400</b></td><td>Sorgo</td><td><span class="st no">Rechazada</span></td><td>12 jun</td></tr>
+            </tbody>
+          </table>
+          <div class="drawer" id="drawer">
+            <div class="dh">
+              <div><h3>Solicitud #A-1042 · José Ramírez</h3><div class="crumb">Finca La Esperanza · Portuguesa · recibida 14 jun 09:12</div></div>
+              <span class="st rev">En revisión</span>
+            </div>
+            <div class="dgrid">
+              <div class="di"><div class="dl">Monto</div><div class="dv">$ 4.500</div></div>
+              <div class="di"><div class="dl">Propósito</div><div class="dv">Capital de trabajo</div></div>
+              <div class="di"><div class="dl">Cultivo</div><div class="dv">Maíz · 7 ha</div></div>
+              <div class="di"><div class="dl">Plazo</div><div class="dv">Cierre de cosecha</div></div>
+              <div class="di"><div class="dl">Historial</div><div class="dv">2 ciclos · sin mora</div></div>
+              <div class="di"><div class="dl">Score (manual)</div><div class="dv">B · Aceptable</div></div>
+            </div>
+            <div class="dl" style="font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px">Documentos cargados</div>
+            <div class="docs">
+              <div class="doc"><div class="dico">📄</div>Cédula.pdf</div>
+              <div class="doc"><div class="dico">📄</div>RIF.pdf</div>
+              <div class="doc"><div class="dico">📄</div>Registro_finca.pdf</div>
+              <div class="doc"><div class="dico">🖼️</div>Cultivo_3fotos.zip</div>
+            </div>
+            <div class="actions">
+              <button class="a-ok" onclick="toast('Solicitud aprobada')">✓ Aprobar</button>
+              <button class="a-info" onclick="toast('Información solicitada')">Solicitar más información</button>
+              <button class="a-no" onclick="toast('Solicitud rechazada')">Rechazar</button>
+            </div>
+            <p class="note">El analista decide manualmente. El score es referencial — el motor automático llega en Fase 3. Toda acción queda en bitácora para auditoría.</p>
+          </div>
+        </div>
+
+        <!-- PRODUCTORES -->
+        <div class="aview" id="aview-productores">
+          <div class="sub sub-home" id="prod-home">
+            <div class="mhead">
+              <div><h2>Productores</h2><div class="crumb">CRM · base de productores</div></div>
+              <input class="search" placeholder="🔍  Buscar productor…">
+            </div>
+            <table>
+              <thead><tr><th>Productor</th><th>Ubicación</th><th>Fincas</th><th>Ciclos</th><th>Estado</th></tr></thead>
+              <tbody>
+                <tr onclick="adminSub('productores','prod-ficha')"><td><div class="who-cell"><div class="av">JR</div>José Ramírez</div></td><td>Portuguesa, VE</td><td>2</td><td>2</td><td><span class="st ok">Verificado</span></td></tr>
+                <tr onclick="adminSub('productores','prod-ficha')"><td><div class="who-cell"><div class="av">CM</div>Carmen Mota</div></td><td>Barinas, VE</td><td>1</td><td>3</td><td><span class="st ok">Verificado</span></td></tr>
+                <tr onclick="adminSub('productores','prod-ficha')"><td><div class="who-cell"><div class="av">LP</div>Luis Peña</div></td><td>Guárico, VE</td><td>3</td><td>5</td><td><span class="st ok">Verificado</span></td></tr>
+                <tr onclick="adminSub('productores','prod-ficha')"><td><div class="who-cell"><div class="av">AD</div>Ana Díaz</div></td><td>Mérida, VE</td><td>1</td><td>1</td><td><span class="st new">Nuevo</span></td></tr>
+                <tr onclick="adminSub('productores','prod-ficha')"><td><div class="who-cell"><div class="av">RG</div>Raúl Gómez</div></td><td>Cojedes, VE</td><td>2</td><td>4</td><td><span class="st info">En revisión</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sub" id="prod-ficha">
+            <div class="mhead">
+              <div><h2><button class="backbtn" onclick="adminSub('productores','prod-home')" style="margin-right:8px">‹</button>José Ramírez</h2><div class="crumb">Ficha de productor · Portuguesa, Venezuela</div></div>
+              <span class="st ok">Verificado</span>
+            </div>
+            <div class="ficha-grid">
+              <div class="panel">
+                <h4>Datos</h4>
+                <div class="kv"><span class="k">Cédula</span><span class="v">V-12.345.678</span></div>
+                <div class="kv"><span class="k">RIF</span><span class="v">J-40558877-1</span></div>
+                <div class="kv"><span class="k">Teléfono</span><span class="v">+58 414 555 1234</span></div>
+                <div class="kv"><span class="k">Alta</span><span class="v">mar 2026</span></div>
+              </div>
+              <div class="panel">
+                <h4>Fincas</h4>
+                <div class="farm-row" style="margin-bottom:10px"><div class="farm-ico">🌽</div><div><div class="fn">Lote norte · Maíz</div><div class="fd">7 ha · activo</div></div></div>
+                <div class="farm-row"><div class="farm-ico">🫘</div><div><div class="fn">Lote sur · Caraota</div><div class="fd">5 ha · descanso</div></div></div>
+              </div>
+            </div>
+            <h4 class="sec-h">Historial de crédito</h4>
+            <table>
+              <thead><tr><th>Folio</th><th>Monto</th><th>Cultivo</th><th>Estado</th><th>Fecha</th></tr></thead>
+              <tbody>
+                <tr><td>#A-1042</td><td><b>$ 4.500</b></td><td>Maíz</td><td><span class="st rev">En revisión</span></td><td>14 jun</td></tr>
+                <tr><td>#A-0987</td><td><b>$ 2.100</b></td><td>Caraota</td><td><span class="st ok">Pagada</span></td><td>ciclo ant.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- DOCUMENTOS -->
+        <div class="aview" id="aview-documentos">
+          <div class="mhead">
+            <div><h2>Documentos por revisar</h2><div class="crumb">Verificación de soportes</div></div>
+            <input class="search" placeholder="🔍  Buscar documento…">
+          </div>
+          <table>
+            <thead><tr><th>Productor</th><th>Documento</th><th>Tipo</th><th>Cargado</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr onclick="toast('Documento abierto')"><td><div class="who-cell"><div class="av">JR</div>José Ramírez</div></td><td>Registro_finca.pdf</td><td>Registro</td><td>14 jun</td><td><span class="st rev">Por revisar</span></td></tr>
+              <tr onclick="toast('Documento abierto')"><td><div class="who-cell"><div class="av">LP</div>Luis Peña</div></td><td>RIF.pdf</td><td>Fiscal</td><td>15 jun</td><td><span class="st rev">Por revisar</span></td></tr>
+              <tr onclick="toast('Documento abierto')"><td><div class="who-cell"><div class="av">CM</div>Carmen Mota</div></td><td>Cedula.pdf</td><td>Identidad</td><td>14 jun</td><td><span class="st ok">Validado</span></td></tr>
+              <tr onclick="toast('Documento abierto')"><td><div class="who-cell"><div class="av">AD</div>Ana Díaz</div></td><td>Cultivo_fotos.zip</td><td>Evidencia</td><td>13 jun</td><td><span class="st no">Ilegible</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- MERCADO DE COSECHA (NUEVO) -->
+        <div class="aview" id="aview-mercado">
+          <div class="mhead">
+            <div><h2>Mercado de Cosecha <span class="st grain">NUEVO</span></h2><div class="crumb">Moderación del marketplace de producción</div></div>
+            <input class="search" placeholder="🔍  Buscar publicación o comprador…">
+          </div>
+
+          <h4 class="sec-h">Publicaciones activas</h4>
+          <table>
+            <thead><tr><th>Productor</th><th>Cultivo</th><th>Cantidad</th><th>Ofertas</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr onclick="toast('Publicación abierta')"><td><div class="who-cell"><div class="av">JR</div>José Ramírez</div></td><td>Maíz amarillo</td><td>12 ton</td><td>3</td><td><span class="st grain">Con ofertas</span></td></tr>
+              <tr onclick="toast('Publicación abierta')"><td><div class="who-cell"><div class="av">JR</div>José Ramírez</div></td><td>Caraota negra</td><td>4 ton</td><td>0</td><td><span class="st new">Publicada</span></td></tr>
+              <tr onclick="toast('Publicación abierta')"><td><div class="who-cell"><div class="av">LP</div>Luis Peña</div></td><td>Arroz paddy</td><td>30 ton</td><td>5</td><td><span class="st grain">Con ofertas</span></td></tr>
+            </tbody>
+          </table>
+
+          <h4 class="sec-h">Compradores registrados</h4>
+          <table>
+            <thead><tr><th>Empresa</th><th>Tipo</th><th>Ubicación</th><th>Ofertas hechas</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr onclick="toast('Comprador abierto')"><td><div class="who-cell"><div class="av">AL</div>Agroindustrias del Llano</div></td><td>Industria</td><td>Guárico, VE</td><td>7</td><td><span class="st ok">Verificado</span></td></tr>
+              <tr onclick="toast('Comprador abierto')"><td><div class="who-cell"><div class="av">TR</div>Cooperativa El Trigal</div></td><td>Cooperativa</td><td>Portuguesa, VE</td><td>4</td><td><span class="st ok">Verificado</span></td></tr>
+              <tr onclick="toast('Comprador abierto')"><td><div class="who-cell"><div class="av">SS</div>Molinos San Simón</div></td><td>Molino</td><td>Barinas, VE</td><td>9</td><td><span class="st info">En revisión</span></td></tr>
+            </tbody>
+          </table>
+
+          <h4 class="sec-h">Transacciones cerradas</h4>
+          <table>
+            <thead><tr><th>Productor</th><th>Cultivo</th><th>Comprador</th><th>Monto</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr onclick="toast('Transacción abierta')"><td>José Ramírez</td><td>Arroz paddy · 20 ton</td><td>Molinos San Simón</td><td><b>$ 5.900</b></td><td><span class="st ok">Cerrada</span></td></tr>
+              <tr onclick="toast('Transacción abierta')"><td>Carmen Mota</td><td>Caraota · 6 ton</td><td>Cooperativa El Trigal</td><td><b>$ 4.200</b></td><td><span class="st ok">Cerrada</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- EXPORTAR -->
+        <div class="aview" id="aview-exportar">
+          <div class="mhead">
+            <div><h2>Exportar datos</h2><div class="crumb">Descarga de información operativa</div></div>
+          </div>
+          <div class="export-opts">
+            <div class="export-row"><div class="er-main"><div class="er-t">Solicitudes de crédito</div><div class="er-s">37 registros · campaña en curso</div></div><button class="btn" onclick="toast('Generando CSV de solicitudes…')">⬇ CSV</button></div>
+            <div class="export-row"><div class="er-main"><div class="er-t">Productores</div><div class="er-s">54 registros</div></div><button class="btn" onclick="toast('Generando CSV de productores…')">⬇ CSV</button></div>
+            <div class="export-row"><div class="er-main"><div class="er-t">Mercado de Cosecha</div><div class="er-s">publicaciones, ofertas y transacciones</div></div><button class="btn" onclick="toast('Generando CSV del mercado…')">⬇ CSV</button></div>
+            <div class="export-row"><div class="er-main"><div class="er-t">Documentos</div><div class="er-s">bitácora de verificación</div></div><button class="btn" onclick="toast('Generando CSV de documentos…')">⬇ CSV</button></div>
+          </div>
+          <p class="note">La exportación respeta los permisos del rol. Toda descarga queda registrada en la bitácora de auditoría.</p>
+        </div>
+
+        <!-- AJUSTES -->
+        <div class="aview" id="aview-ajustes">
+          <div class="mhead">
+            <div><h2>Ajustes</h2><div class="crumb">Configuración del backoffice</div></div>
+          </div>
+          <h4 class="sec-h">Roles del equipo</h4>
+          <table>
+            <thead><tr><th>Usuario</th><th>Rol</th><th>Permisos</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td><div class="who-cell"><div class="av">MQ</div>M. Quintero</div></td><td>Analista de crédito</td><td>Revisar · decidir</td><td><span class="st ok">Activo</span></td></tr>
+              <tr><td><div class="who-cell"><div class="av">RA</div>R. Anzola</div></td><td>Administrador</td><td>Total</td><td><span class="st ok">Activo</span></td></tr>
+              <tr><td><div class="who-cell"><div class="av">VG</div>V. Gil</div></td><td>Verificador docs</td><td>Documentos</td><td><span class="st new">Invitado</span></td></tr>
+            </tbody>
+          </table>
+          <h4 class="sec-h">Estados de solicitud</h4>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+            <span class="st new">Nueva</span><span class="st rev">En revisión</span><span class="st info">Info solicitada</span><span class="st ok">Aprobada</span><span class="st no">Rechazada</span>
+          </div>
+          <h4 class="sec-h">Parámetros de crédito</h4>
+          <div class="ficha-grid">
+            <div class="panel">
+              <div class="kv"><span class="k">Monto máximo</span><span class="v">$ 10.000</span></div>
+              <div class="kv"><span class="k">Plazo máximo</span><span class="v">6 meses</span></div>
+              <div class="kv"><span class="k">Score mínimo</span><span class="v">C</span></div>
+            </div>
+            <div class="panel">
+              <div class="kv"><span class="k">Aprobación</span><span class="v">Manual</span></div>
+              <div class="kv"><span class="k">País piloto</span><span class="v">Venezuela</span></div>
+              <div class="kv"><span class="k">Moneda</span><span class="v">USD</span></div>
+            </div>
+          </div>
+        </div>
+
       </main>
     </div>
   </div>
 
-  <p class="legend"><b>Alcance del MVP:</b> Siembra Fácil (originación y gestión manual del crédito agrícola) + backoffice + Cosecha IA básica. Cuenta Global (wallet USD), Insumos PRO (marketplace), Clima Seguro (paramétrico) y Scoring 4D Satelital se construyen por fases sobre esta misma arquitectura. <br>Mockup de referencia para la reunión de alineación · Elaborado por ElipSoft LLC</p>
+  <p class="legend"><b>Alcance del MVP:</b> Siembra Fácil (crédito agrícola manual) + backoffice + Cosecha IA básica + <b>Mi Cosecha en Venta</b> (marketplace de producción). Cuenta Global, Insumos PRO, Clima Seguro y Scoring 4D se construyen por fases sobre esta misma arquitectura. <br>Prototipo navegable de referencia · Elaborado por ElipSoft LLC</p>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
+  function $(id){return document.getElementById(id);}
+
   function showStage(id, btn){
     document.querySelectorAll('.stage').forEach(s=>s.classList.remove('show'));
-    document.getElementById(id).classList.add('show');
+    $(id).classList.add('show');
     document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
   }
-  function openDrawer(){
-    const d=document.getElementById('drawer');
-    d.classList.add('show');
-    d.scrollIntoView({behavior:'smooth',block:'center'});
+
+  /* ---------- APP nav ---------- */
+  const APPMETA = {
+    inicio:{hi:"Buenas, productor",name:"José Ramírez",loc:"📍 Finca La Esperanza · 12 ha"},
+    finca:{hi:"Mi perfil productivo",name:"Finca La Esperanza",loc:"📍 Portuguesa · 12 hectáreas"},
+    credito:{hi:"Siembra Fácil",name:"Mi crédito",loc:"Crédito agrícola"},
+    cosecha:{hi:"Mi Cosecha en Venta",name:"Mercado",loc:"🌾 Vende tu producción"},
+    cosechaia:{hi:"Cosecha IA",name:"Asistente agrícola",loc:"🤖 En línea 24/7"},
+    perfil:{hi:"Mi cuenta",name:"José Ramírez",loc:"Productor verificado"},
+  };
+  function appView(name){
+    document.querySelectorAll('#app .view').forEach(v=>v.classList.remove('on'));
+    $('view-'+name).classList.add('on');
+    document.querySelectorAll('#app .tabbar .tb').forEach(t=>t.classList.toggle('on', t.dataset.view===name));
+    document.querySelectorAll('#view-'+name+' .sub').forEach(s=>s.classList.toggle('on', s.classList.contains('sub-home')));
+    const m=APPMETA[name];
+    if(m){ $('abHi').textContent=m.hi; $('abName').textContent=m.name; $('abLoc').textContent=m.loc; }
+    const body=document.querySelector('#app .appbody'); if(body) body.scrollTop=0;
   }
+  function appSub(view, subId){
+    document.querySelectorAll('#view-'+view+' .sub').forEach(s=>s.classList.remove('on'));
+    $(subId).classList.add('on');
+    const body=document.querySelector('#app .appbody'); if(body) body.scrollTop=0;
+  }
+
+  /* parcela */
+  function verParcela(name, sub, ico, crop, cal){
+    $('fdName').textContent=name; $('fdSub').textContent=sub; $('fdIco').textContent=ico;
+    $('fdTitle').textContent=name; $('fdCrop').textContent=crop;
+    $('fdState').textContent = sub.includes('descanso') ? 'En descanso' : 'Ciclo activo';
+    $('fdCal').textContent=cal;
+    appSub('finca','finca-detalle');
+  }
+
+  /* crédito */
+  function enviarSolicitud(){ toast('✓ Solicitud enviada a ACRE'); appSub('credito','credito-home'); }
+
+  /* cosecha en venta */
+  function pickChip(el){
+    el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+    el.classList.add('on');
+  }
+  function guardarPublicacion(){ toast('🌾 Cosecha publicada en el mercado'); appSub('cosecha','cosecha-home'); }
+  function verPublicacion(title, qty, estado){
+    $('pubTitle').textContent=title; $('pubQty').textContent=qty;
+    const ps=$('pubState'), ofertas=$('ofertasBox'), sin=$('sinOfertas');
+    if(estado==='con-ofertas'){ ps.className='pill grain'; ps.textContent='Con ofertas'; ofertas.style.display='block'; sin.style.display='none'; }
+    else if(estado==='adjudicada'){ ps.className='pill ok'; ps.textContent='Adjudicada'; ofertas.style.display='none'; sin.style.display='none'; }
+    else { ps.className='pill new'; ps.textContent='Publicada'; ofertas.style.display='none'; sin.style.display='block'; }
+    appSub('cosecha','cosecha-detalle');
+  }
+  function elegirOferta(buyer){
+    toast('✓ Vendiste a '+buyer);
+    $('pubState').className='pill ok'; $('pubState').textContent='Adjudicada';
+    $('ofertasBox').style.display='none'; $('sinOfertas').style.display='none';
+  }
+
+  /* ---------- ADMIN nav ---------- */
+  function adminView(name){
+    document.querySelectorAll('#admin .aview').forEach(v=>v.classList.remove('on'));
+    $('aview-'+name).classList.add('on');
+    document.querySelectorAll('#admin .nav a').forEach(a=>a.classList.toggle('on', a.dataset.view===name));
+    document.querySelectorAll('#aview-'+name+' .sub').forEach(s=>s.classList.toggle('on', s.classList.contains('sub-home')));
+    const dr=$('drawer'); if(dr) dr.classList.remove('show');
+    const main=document.querySelector('#admin .main'); if(main) main.scrollTop=0;
+  }
+  function adminSub(view, subId){
+    document.querySelectorAll('#aview-'+view+' .sub').forEach(s=>s.classList.remove('on'));
+    $(subId).classList.add('on');
+    const main=document.querySelector('#admin .main'); if(main) main.scrollTop=0;
+  }
+  function openDrawer(){ const d=$('drawer'); d.classList.add('show'); d.scrollIntoView({behavior:'smooth',block:'center'}); }
+
+  /* toast */
+  function toast(msg){
+    const t=$('toast'); t.textContent=msg; t.classList.add('show');
+    clearTimeout(window._tt); window._tt=setTimeout(function(){t.classList.remove('show');},2200);
+  }
+
+  /* init */
+  appView('inicio');
+  adminView('dashboard');
 </script>
 </body>
 </html>
