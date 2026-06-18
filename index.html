@@ -249,9 +249,24 @@ const MODULES = [
   },
 ];
 
-const answers = {};
+const STORAGE_KEY = "acre_levantamiento_v1";
 let totalQ = 0;
-MODULES.forEach(m=>{ answers[m.id]={}; totalQ+=m.questions.length; });
+MODULES.forEach(m=>{ totalQ+=m.questions.length; });
+
+function loadAnswers(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  } catch(e){}
+  const blank = {};
+  MODULES.forEach(m=>{ blank[m.id]={}; });
+  return blank;
+}
+function saveAnswers(){
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(answers)); } catch(e){}
+}
+
+const answers = loadAnswers();
 
 function moduleState(modId){
   const a=answers[modId]; const total=MODULES.find(m=>m.id===modId).questions.length;
@@ -321,12 +336,14 @@ function closeSheet(){
 function pick(modId,qi,oi){
   if(!answers[modId][qi]) answers[modId][qi]={};
   answers[modId][qi].opt=oi;
+  saveAnswers();
   openSheet(modId);
   flashSave();
 }
 function note(modId,qi,val){
   if(!answers[modId][qi]) answers[modId][qi]={};
   answers[modId][qi].note=val;
+  saveAnswers();
   flashSave();
 }
 function flashSave(){
@@ -380,6 +397,7 @@ function downloadActa(){
 function resetAll(){
   if(!confirm("¿Borrar todas las respuestas de esta sesión?")) return;
   MODULES.forEach(m=>answers[m.id]={});
+  saveAnswers();
   renderGrid(); toast("Levantamiento reiniciado");
 }
 function toast(msg){
